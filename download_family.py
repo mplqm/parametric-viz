@@ -34,7 +34,7 @@ query = {
     },
     "return_type": "entry",
     "request_options": {
-        "paginate": {"start": 0, "rows": 20},
+        "paginate": {"start": 0, "rows": 100},
         "sort": [
             {"sort_by": "rcsb_entry_info.resolution_combined", "direction": "asc"}
         ]

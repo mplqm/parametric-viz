@@ -9,6 +9,7 @@ GEO_DIR = "geometry"
 CLUSTERS_FILE = "clusters.json"
 OUT_FILE = "transitions.json"
 N_FRAMES = 60
+MIN_RESIDUES = 20   # skip transitions with fewer shared Cα (SKILL.md edge-case rule)
 
 # ── amino-acid lookup ─────────────────────────────────────────────────────────
 _AA3TO1 = {
@@ -138,8 +139,8 @@ for lbl_a, lbl_b in combinations(cluster_labels, 2):
     cent_b = centroids[lbl_b]
 
     common_pos = sorted(set(cent_a) & set(cent_b))
-    if not common_pos:
-        print(f"  WARNING: clusters {lbl_a}↔{lbl_b} share no common residues — skipped")
+    if len(common_pos) < MIN_RESIDUES:
+        print(f"  SKIP: clusters {lbl_a}↔{lbl_b} — only {len(common_pos)} shared Cα (< {MIN_RESIDUES})")
         continue
 
     res_seq_list = [ref["ca_trace"][p]["res_seq"] for p in common_pos]
