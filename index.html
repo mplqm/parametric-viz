@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Protein Transition Viewer</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #07090f;
+    overflow: hidden;
+    font-family: 'Courier New', Courier, monospace;
+    color: #8899bb;
+  }
+
+  canvas { display: block; }
+
+  /* ── control panel ───────────────────────────────────────────────────── */
+  #panel {
+    position: absolute;
+    top: 16px; left: 16px;
+    z-index: 10;
+    width: 340px;
+    background: rgba(6, 9, 22, 0.88);
+    border: 1px solid rgba(80, 110, 220, 0.28);
+    border-radius: 10px;
+    padding: 16px 18px;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    box-shadow: 0 4px 32px rgba(0,0,60,0.6);
+    user-select: none;
+  }
+
+  #panel h1 {
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    color: #5577dd;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(80,110,220,0.2);
+  }
+
+  .field-label {
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    color: #445577;
+    text-transform: uppercase;
+    margin-top: 12px;
+    margin-bottom: 5px;
+  }
+
+  select {
+    width: 100%;
+    background: rgba(3, 5, 15, 0.9);
+    color: #aabbdd;
+    border: 1px solid rgba(80,110,220,0.3);
+    border-radius: 5px;
+    padding: 6px 8px;
+    font-size: 11px;
+    font-family: inherit;
+    cursor: pointer;
+    outline: none;
+  }
+  select:hover { border-color: rgba(100,140,255,0.55); }
+  select option { background: #0a0e1e; }
+
+  .row { display: flex; align-items: center; gap: 8px; }
+
+  input[type="range"] {
+    flex: 1;
+    -webkit-appearance: none;
+    height: 3px;
+    border-radius: 2px;
+    background: rgba(80,110,220,0.25);
+    outline: none;
+    cursor: pointer;
+  }
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 13px; height: 13px;
+    border-radius: 50%;
+    background: #4466ff;
+    border: 2px solid #99aaff;
+    cursor: pointer;
+  }
+  input[type="range"]::-moz-range-thumb {
+    width: 13px; height: 13px;
+    border-radius: 50%;
+    background: #4466ff;
+    border: 2px solid #99aaff;
+    cursor: pointer;
+  }
+
+  #frame-display {
+    font-size: 11px;
+    color: #4466cc;
+    min-width: 42px;
+    text-align: right;
+    flex-shrink: 0;
+  }
+
+  .btn-row { display: flex; gap: 8px; margin-top: 14px; }
+
+  button {
+    flex: 1;
+    background: rgba(30, 45, 110, 0.6);
+    color: #7799ee;
+    border: 1px solid rgba(80,110,220,0.4);
+    border-radius: 5px;
+    padding: 7px 6px;
+    font-size: 11px;
+    font-family: inherit;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+    letter-spacing: 0.05em;
+  }
+  button:hover { background: rgba(50, 75, 180, 0.75); color: #bbccff; }
+  button:active { background: rgba(60, 90, 200, 0.85); }
+
+  #speed-select {
+    flex: 0 0 auto;
+    width: auto;
+    padding: 7px 8px;
+    font-size: 11px;
+  }
+
+  /* ── info box ───────────────────────────────────────────────────────── */
+  #info {
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(80,110,220,0.18);
+    font-size: 10px;
+    line-height: 1.75;
+    color: #445577;
+  }
+  #info .hi { color: #6688bb; }
+
+  /* ── colour legend ──────────────────────────────────────────────────── */
+  .legend {
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(80,110,220,0.18);
+  }
+  .legend-bar {
+    height: 7px;
+    border-radius: 4px;
+    margin: 6px 0 4px;
+    background: linear-gradient(to right,
+      hsl(0,85%,62%), hsl(54,85%,62%), hsl(108,85%,62%),
+      hsl(162,85%,62%), hsl(216,85%,62%), hsl(270,85%,62%));
+  }
+  .legend-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 9px;
+    color: #334466;
+    letter-spacing: 0.08em;
+  }
+
+  /* ── loading overlay ────────────────────────────────────────────────── */
+  #loader {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: #07090f;
+    color: #445599;
+    font-size: 13px;
+    letter-spacing: 0.14em;
+    z-index: 99;
+    gap: 10px;
+  }
+  #loader .sub { font-size: 10px; color: #2d3a5a; letter-spacing: 0.1em; }
+</style>
+</head>
+<body>
+
+<!-- ── loading screen ──────────────────────────────────────────────────── -->
+<div id="loader">
+  <span>LOADING TRANSITIONS.JSON</span>
+  <span class="sub">serve with:  python3 -m http.server</span>
+</div>
+
+<!-- ── control panel ───────────────────────────────────────────────────── -->
+<div id="panel" style="display:none">
+  <h1>Protein Transition Viewer</h1>
+
+  <div class="field-label">Transition</div>
+  <select id="transition-select"></select>
+
+  <div class="field-label">Frame</div>
+  <div class="row">
+    <input type="range" id="frame-slider" min="0" max="59" value="0" step="1">
+    <span id="frame-display">0 / 59</span>
+  </div>
+
+  <div class="btn-row">
+    <button id="play-btn">▶ Play</button>
+    <button id="reset-btn">↩ Reset</button>
+    <select id="speed-select" class="button" title="Playback speed">
+      <option value="6">½×</option>
+      <option value="12" selected>1×</option>
+      <option value="24">2×</option>
+      <option value="48">4×</option>
+    </select>
+  </div>
+
+  <div id="info"></div>
+
+  <div class="legend">
+    <div class="field-label" style="margin-top:0">Cα colour — residue position</div>
+    <div class="legend-bar"></div>
+    <div class="legend-labels"><span>N-term</span><span>C-term</span></div>
+  </div>
+</div>
+
+<!-- ── importmap + Three.js ────────────────────────────────────────────── -->
+<script type="importmap">
+{
+  "imports": {
+    "three":          "https://cdn.jsdelivr.net/npm/three@0.165.0/build/three.module.js",
+    "three/addons/":  "https://cdn.jsdelivr.net/npm/three@0.165.0/examples/jsm/"
+  }
+}
+</script>
+
+<script type="module">
+import * as THREE                from 'three';
+import { OrbitControls }        from 'three/addons/controls/OrbitControls.js';
+import { Line2 }                from 'three/addons/lines/Line2.js';
+import { LineGeometry }         from 'three/addons/lines/LineGeometry.js';
+import { LineMaterial }         from 'three/addons/lines/LineMaterial.js';
+
+// ── scene setup ─────────────────────────────────────────────────────────────
+const scene    = new THREE.Scene();
+scene.background = new THREE.Color(0x07090f);
+scene.fog        = new THREE.FogExp2(0x07090f, 0.0035);
+
+const camera = new THREE.PerspectiveCamera(42, innerWidth / innerHeight, 0.5, 2000);
+camera.position.set(0, 0, 140);
+
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.setSize(innerWidth, innerHeight);
+document.body.appendChild(renderer.domElement);
+
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping  = true;
+controls.dampingFactor  = 0.06;
+controls.minDistance    = 10;
+controls.maxDistance    = 800;
+
+// lighting
+scene.add(new THREE.AmbientLight(0x2a3a66, 3.5));
+
+const sun = new THREE.DirectionalLight(0xffffff, 2.8);
+sun.position.set(3, 5, 4);
+scene.add(sun);
+
+const fill = new THREE.DirectionalLight(0x4466ff, 1.2);
+fill.position.set(-4, -2, -3);
+scene.add(fill);
+
+const rim = new THREE.DirectionalLight(0xffeedd, 0.6);
+rim.position.set(0, -5, 2);
+scene.add(rim);
+
+// ── geometry helpers ─────────────────────────────────────────────────────────
+
+// global residue-seq colour range (computed after data loads)
+let gMinRes = 0, gMaxRes = 300;
+
+function resColor(resSeq) {
+  const t = Math.max(0, Math.min(1, (resSeq - gMinRes) / (gMaxRes - gMinRes)));
+  return new THREE.Color().setHSL(t * 0.75, 0.88, 0.62);
+}
+
+// shared sphere geometry (reused across all transitions)
+const SPHERE_GEO = new THREE.SphereGeometry(0.55, 10, 7);
+const SPHERE_MAT = new THREE.MeshPhongMaterial({ shininess: 90 });
+
+// break the backbone into segments at large sequence gaps
+function buildSegments(resSeqArr) {
+  const GAP = 6;
+  const segs = [];
+  let start = 0;
+  for (let i = 1; i < resSeqArr.length; i++) {
+    if (resSeqArr[i] - resSeqArr[i - 1] > GAP) {
+      segs.push([start, i]);
+      start = i;
+    }
+  }
+  segs.push([start, resSeqArr.length]);
+  return segs;
+}
+
+// ── per-transition state ─────────────────────────────────────────────────────
+let sphereMesh = null;         // InstancedMesh
+let backboneLines = [];        // Line2[]
+let currentTransition = null;
+let segmentMap = [];           // [{start,end,line2,lineGeo}]
+
+function clearScene() {
+  if (sphereMesh)       { scene.remove(sphereMesh); sphereMesh.geometry.dispose(); sphereMesh = null; }
+  backboneLines.forEach(l => { scene.remove(l); l.geometry.dispose(); l.material.dispose(); });
+  backboneLines = [];
+  segmentMap = [];
+}
+
+function buildSceneForTransition(t) {
+  clearScene();
+  currentTransition = t;
+  const N   = t.n_residues;
+  const segs = buildSegments(t.res_seq);
+
+  // per-residue colours
+  const colArr = t.res_seq.map(rs => resColor(rs));
+
+  // ── instanced CA spheres ────────────────────────────────────────────────
+  sphereMesh = new THREE.InstancedMesh(SPHERE_GEO, SPHERE_MAT, N);
+  const iColor = new THREE.InstancedBufferAttribute(new Float32Array(N * 3), 3);
+  colArr.forEach((c, i) => iColor.setXYZ(i, c.r, c.g, c.b));
+  sphereMesh.instanceColor           = iColor;
+  sphereMesh.instanceColor.needsUpdate = true;
+  scene.add(sphereMesh);
+
+  // ── Line2 backbone segments ─────────────────────────────────────────────
+  const lineMat = new LineMaterial({
+    vertexColors : true,
+    linewidth    : 2.5,       // pixels
+    resolution   : new THREE.Vector2(innerWidth, innerHeight),
+    alphaToCoverage: true,
+  });
+
+  segs.forEach(([s, e]) => {
+    if (e - s < 2) return;    // skip isolated points
+
+    const count = e - s;
+    const pos   = new Float32Array(count * 3);
+    const cols  = new Float32Array(count * 3);
+    colArr.slice(s, e).forEach((c, k) => {
+      cols[k * 3] = c.r; cols[k * 3 + 1] = c.g; cols[k * 3 + 2] = c.b;
+    });
+
+    const geo = new LineGeometry();
+    geo.setPositions(pos);   // placeholder; updated by displayFrame
+    geo.setColors(cols);
+
+    const line = new Line2(geo, lineMat);
+    line.computeLineDistances();
+    scene.add(line);
+    backboneLines.push(line);
+    segmentMap.push({ start: s, end: e, line, geo });
+  });
+}
+
+// dummy Object3D reused for InstancedMesh matrix updates
+const _dummy = new THREE.Object3D();
+
+function displayFrame(frameIdx) {
+  const frame = currentTransition.frames[frameIdx];
+  const N     = frame.length;
+
+  // update sphere positions
+  for (let i = 0; i < N; i++) {
+    _dummy.position.fromArray(frame[i]);
+    _dummy.updateMatrix();
+    sphereMesh.setMatrixAt(i, _dummy.matrix);
+  }
+  sphereMesh.instanceMatrix.needsUpdate = true;
+
+  // update Line2 segments
+  segmentMap.forEach(({ start, end, geo }) => {
+    const count = end - start;
+    const pos   = new Float32Array(count * 3);
+    for (let i = 0; i < count; i++) {
+      pos[i * 3]     = frame[start + i][0];
+      pos[i * 3 + 1] = frame[start + i][1];
+      pos[i * 3 + 2] = frame[start + i][2];
+    }
+    geo.setPositions(pos);
+  });
+}
+
+function fitCameraToFrame(frame) {
+  const box = new THREE.Box3();
+  frame.forEach(p => box.expandByPoint(new THREE.Vector3(p[0], p[1], p[2])));
+  const centre = box.getCenter(new THREE.Vector3());
+  const span   = box.getSize(new THREE.Vector3()).length();
+  controls.target.copy(centre);
+  camera.position.copy(centre).addScaledVector(
+    new THREE.Vector3(0.25, 0.25, 1).normalize(), span * 0.9
+  );
+  controls.update();
+}
+
+// ── playback ─────────────────────────────────────────────────────────────────
+let currentFrame = 0;
+let isPlaying    = false;
+let lastFrameTs  = 0;
+
+function getTargetFps() { return parseInt(document.getElementById('speed-select').value); }
+
+function setFrame(idx) {
+  currentFrame = Math.max(0, Math.min(idx, currentTransition.frames.length - 1));
+  displayFrame(currentFrame);
+  const slider = document.getElementById('frame-slider');
+  slider.value = currentFrame;
+  document.getElementById('frame-display').textContent =
+    `${currentFrame} / ${currentTransition.frames.length - 1}`;
+}
+
+// ── render loop ───────────────────────────────────────────────────────────────
+function animate(ts) {
+  requestAnimationFrame(animate);
+
+  if (isPlaying && currentTransition) {
+    const interval = 1000 / getTargetFps();
+    if (ts - lastFrameTs >= interval) {
+      setFrame((currentFrame + 1) % currentTransition.frames.length);
+      lastFrameTs = ts;
+    }
+  }
+
+  controls.update();
+  renderer.render(scene, camera);
+}
+
+// ── UI wiring ─────────────────────────────────────────────────────────────────
+function loadTransition(idx, transitions) {
+  const t = transitions[idx];
+  buildSceneForTransition(t);
+  setFrame(0);
+  fitCameraToFrame(t.frames[0]);
+
+  document.getElementById('frame-slider').max =
+    t.frames.length - 1;
+  document.getElementById('frame-display').textContent =
+    `0 / ${t.frames.length - 1}`;
+
+  document.getElementById('info').innerHTML =
+    `<span class="hi">From C${t.from_cluster}:</span>  ${t.from_members.join(', ')}<br>` +
+    `<span class="hi">To   C${t.to_cluster}:</span>  ${t.to_members.join(', ')}<br>` +
+    `<span style="color:#334466">Cα residues: ${t.n_residues}` +
+    `  ·  res ${t.res_seq[0]}–${t.res_seq.at(-1)}</span>`;
+}
+
+document.getElementById('frame-slider').addEventListener('input', e => {
+  if (isPlaying) {
+    isPlaying = false;
+    document.getElementById('play-btn').textContent = '▶ Play';
+  }
+  setFrame(parseInt(e.target.value));
+});
+
+document.getElementById('play-btn').addEventListener('click', () => {
+  isPlaying = !isPlaying;
+  document.getElementById('play-btn').textContent = isPlaying ? '⏸ Pause' : '▶ Play';
+  lastFrameTs = 0;
+});
+
+document.getElementById('reset-btn').addEventListener('click', () => {
+  isPlaying = false;
+  document.getElementById('play-btn').textContent = '▶ Play';
+  setFrame(0);
+});
+
+window.addEventListener('resize', () => {
+  camera.aspect = innerWidth / innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth, innerHeight);
+  backboneLines.forEach(l => l.material.resolution.set(innerWidth, innerHeight));
+});
+
+// ── load data ─────────────────────────────────────────────────────────────────
+(async () => {
+  try {
+    const resp = await fetch('transitions.json');
+    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+    const data = await resp.json();
+
+    // compute global residue range for consistent colouring
+    data.transitions.forEach(t =>
+      t.res_seq.forEach(r => {
+        if (r < gMinRes || gMinRes === 0) gMinRes = r;
+        if (r > gMaxRes) gMaxRes = r;
+      })
+    );
+
+    // populate dropdown
+    const sel = document.getElementById('transition-select');
+    data.transitions.forEach((t, i) => {
+      const from = t.from_members.join('+');
+      const to   = t.to_members.join('+');
+      const opt  = document.createElement('option');
+      opt.value  = i;
+      opt.text   = `C${t.from_cluster}→C${t.to_cluster}  [${from}] → [${to}]  (${t.n_residues} Cα)`;
+      sel.appendChild(opt);
+    });
+
+    sel.addEventListener('change', e =>
+      loadTransition(parseInt(e.target.value), data.transitions)
+    );
+
+    document.getElementById('loader').style.display = 'none';
+    document.getElementById('panel').style.display  = 'block';
+
+    loadTransition(0, data.transitions);
+    requestAnimationFrame(animate);
+
+  } catch (err) {
+    const el = document.getElementById('loader');
+    el.innerHTML =
+      `<span style="color:#884444">Failed to load transitions.json</span>` +
+      `<span class="sub">${err.message}</span>` +
+      `<span class="sub">Run:  python3 -m http.server  then open  http://localhost:8000</span>`;
+  }
+})();
+</script>
+</body>
+</html>
