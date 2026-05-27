@@ -1,0 +1,3205 @@
+{
+  "pdb_id": "8PAQ",
+  "chains": [
+    "A",
+    "B"
+  ],
+  "centroid_original": [
+    20.8995,
+    45.2715,
+    9.9338
+  ],
+  "residue_count": 319,
+  "ca_trace": [
+    {
+      "chain": "A",
+      "res_seq": 8,
+      "res_name": "SER",
+      "coords": [
+        -12.0575,
+        -20.6125,
+        -20.8918
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 9,
+      "res_name": "SER",
+      "coords": [
+        -14.1825,
+        -17.5745,
+        -20.0498
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 10,
+      "res_name": "ASN",
+      "coords": [
+        -13.2465,
+        -14.3955,
+        -18.2138
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 11,
+      "res_name": "THR",
+      "coords": [
+        -13.6295,
+        -14.7275,
+        -14.4278
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 12,
+      "res_name": "ASN",
+      "coords": [
+        -11.5145,
+        -11.6615,
+        -13.5748
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 13,
+      "res_name": "PRO",
+      "coords": [
+        -14.5455,
+        -9.8495,
+        -12.0478
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 14,
+      "res_name": "ALA",
+      "coords": [
+        -15.0865,
+        -12.6465,
+        -9.5048
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 15,
+      "res_name": "ILE",
+      "coords": [
+        -11.3555,
+        -12.8335,
+        -8.7758
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 16,
+      "res_name": "TYR",
+      "coords": [
+        -11.1505,
+        -9.0565,
+        -8.3358
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 17,
+      "res_name": "GLN",
+      "coords": [
+        -14.1645,
+        -9.1435,
+        -5.9978
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 18,
+      "res_name": "ALA",
+      "coords": [
+        -12.4135,
+        -11.6395,
+        -3.7068
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 19,
+      "res_name": "ILE",
+      "coords": [
+        -9.1545,
+        -9.6795,
+        -3.7658
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 20,
+      "res_name": "SER",
+      "coords": [
+        -11.0745,
+        -6.4505,
+        -3.1198
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 21,
+      "res_name": "VAL",
+      "coords": [
+        -12.8395,
+        -7.9495,
+        -0.0988
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 22,
+      "res_name": "LEU",
+      "coords": [
+        -9.4785,
+        -9.1295,
+        1.2212
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 23,
+      "res_name": "SER",
+      "coords": [
+        -7.8495,
+        -5.7394,
+        0.6532
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 24,
+      "res_name": "GLN",
+      "coords": [
+        -10.7305,
+        -3.9985,
+        2.4462
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 25,
+      "res_name": "GLN",
+      "coords": [
+        -10.2325,
+        -6.2485,
+        5.4752
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 26,
+      "res_name": "ILE",
+      "coords": [
+        -6.4765,
+        -5.6305,
+        5.3972
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 27,
+      "res_name": "HIS",
+      "coords": [
+        -7.1345,
+        -1.8795,
+        5.3822
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 28,
+      "res_name": "VAL",
+      "coords": [
+        -8.9975,
+        -2.3735,
+        8.6582
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 29,
+      "res_name": "ASN",
+      "coords": [
+        -6.6945,
+        -4.7245,
+        10.5732
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 30,
+      "res_name": "ILE",
+      "coords": [
+        -3.3285,
+        -3.2335,
+        9.5962
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 31,
+      "res_name": "PRO",
+      "coords": [
+        -4.1315,
+        0.3646,
+        10.6492
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 32,
+      "res_name": "GLU",
+      "coords": [
+        -5.4615,
+        -1.0295,
+        13.9552
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 33,
+      "res_name": "LEU",
+      "coords": [
+        -2.2205,
+        -2.9554,
+        14.4912
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 34,
+      "res_name": "ASN",
+      "coords": [
+        -0.2045,
+        0.1836,
+        13.6832
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 35,
+      "res_name": "THR",
+      "coords": [
+        -2.1105,
+        2.2295,
+        16.2632
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 36,
+      "res_name": "LEU",
+      "coords": [
+        -1.9115,
+        -0.5705,
+        18.8502
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 37,
+      "res_name": "GLN",
+      "coords": [
+        1.8625,
+        -0.7485,
+        18.4272
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 38,
+      "res_name": "ALA",
+      "coords": [
+        2.3955,
+        3.0115,
+        18.4302
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 39,
+      "res_name": "SER",
+      "coords": [
+        0.2445,
+        3.5125,
+        21.5372
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 40,
+      "res_name": "GLY",
+      "coords": [
+        1.7325,
+        0.6755,
+        23.5862
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 41,
+      "res_name": "GLY",
+      "coords": [
+        -1.5135,
+        -1.3005,
+        23.4332
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 42,
+      "res_name": "ALA",
+      "coords": [
+        -0.0925,
+        -4.1995,
+        21.4252
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 43,
+      "res_name": "THR",
+      "coords": [
+        -0.4545,
+        -7.4005,
+        23.4692
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 44,
+      "res_name": "ASP",
+      "coords": [
+        -0.8455,
+        -11.0985,
+        22.7362
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 45,
+      "res_name": "LEU",
+      "coords": [
+        -4.5945,
+        -10.5365,
+        22.9062
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 46,
+      "res_name": "THR",
+      "coords": [
+        -5.0105,
+        -7.3465,
+        20.8832
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 47,
+      "res_name": "VAL",
+      "coords": [
+        -2.5135,
+        -8.3635,
+        18.1942
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 48,
+      "res_name": "GLY",
+      "coords": [
+        -3.9025,
+        -11.8965,
+        18.1132
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 49,
+      "res_name": "ASN",
+      "coords": [
+        -7.4515,
+        -10.6704,
+        17.5392
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 50,
+      "res_name": "GLU",
+      "coords": [
+        -6.3625,
+        -8.6295,
+        14.5092
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 51,
+      "res_name": "LEU",
+      "coords": [
+        -4.1815,
+        -11.4105,
+        13.0882
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 52,
+      "res_name": "ASP",
+      "coords": [
+        -6.9765,
+        -13.9525,
+        13.5292
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 53,
+      "res_name": "GLU",
+      "coords": [
+        -9.2475,
+        -11.7555,
+        11.3912
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 54,
+      "res_name": "LEU",
+      "coords": [
+        -6.4715,
+        -11.3234,
+        8.8222
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 55,
+      "res_name": "THR",
+      "coords": [
+        -5.7905,
+        -15.0695,
+        8.6662
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 56,
+      "res_name": "ASP",
+      "coords": [
+        -9.5145,
+        -15.7235,
+        8.2302
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 57,
+      "res_name": "ALA",
+      "coords": [
+        -9.7095,
+        -13.1585,
+        5.4252
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 58,
+      "res_name": "PHE",
+      "coords": [
+        -6.8225,
+        -14.7795,
+        3.5172
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 59,
+      "res_name": "THR",
+      "coords": [
+        -8.3435,
+        -18.2255,
+        4.0122
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 60,
+      "res_name": "LEU",
+      "coords": [
+        -11.6915,
+        -17.0165,
+        2.6842
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 61,
+      "res_name": "ALA",
+      "coords": [
+        -10.1365,
+        -15.2625,
+        -0.3098
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 62,
+      "res_name": "ALA",
+      "coords": [
+        -8.1135,
+        -18.3695,
+        -1.1688
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 63,
+      "res_name": "ALA",
+      "coords": [
+        -11.1795,
+        -20.6065,
+        -0.9578
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 64,
+      "res_name": "THR",
+      "coords": [
+        -13.3015,
+        -18.2405,
+        -3.0358
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 65,
+      "res_name": "ILE",
+      "coords": [
+        -10.6975,
+        -17.9975,
+        -5.7968
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 66,
+      "res_name": "ALA",
+      "coords": [
+        -9.9165,
+        -21.7185,
+        -5.6598
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 67,
+      "res_name": "ASN",
+      "coords": [
+        -13.6115,
+        -22.3935,
+        -6.3128
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 68,
+      "res_name": "THR",
+      "coords": [
+        -13.6845,
+        -19.8865,
+        -9.1878
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 69,
+      "res_name": "ALA",
+      "coords": [
+        -13.1705,
+        -21.2475,
+        -12.6918
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 70,
+      "res_name": "VAL",
+      "coords": [
+        -9.8385,
+        -20.5715,
+        -14.3978
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 71,
+      "res_name": "SER",
+      "coords": [
+        -9.9375,
+        -17.2085,
+        -16.1378
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 72,
+      "res_name": "SER",
+      "coords": [
+        -9.0485,
+        -16.5545,
+        -19.7318
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 73,
+      "res_name": "GLY",
+      "coords": [
+        -8.0205,
+        -13.1205,
+        -18.4318
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 74,
+      "res_name": "ASP",
+      "coords": [
+        -8.5985,
+        -9.5915,
+        -19.6878
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 75,
+      "res_name": "THR",
+      "coords": [
+        -5.8715,
+        -7.0995,
+        -20.5448
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 76,
+      "res_name": "THR",
+      "coords": [
+        -8.0975,
+        -4.2965,
+        -21.8638
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 77,
+      "res_name": "ASN",
+      "coords": [
+        -11.1685,
+        -3.7884,
+        -19.6378
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 78,
+      "res_name": "PHE",
+      "coords": [
+        -11.3625,
+        -3.2635,
+        -15.8928
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 79,
+      "res_name": "PRO",
+      "coords": [
+        -10.6615,
+        -5.4204,
+        -13.9278
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 80,
+      "res_name": "THR",
+      "coords": [
+        -7.6115,
+        -6.3924,
+        -15.9588
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 81,
+      "res_name": "ASN",
+      "coords": [
+        -5.0695,
+        -9.0244,
+        -14.9728
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 82,
+      "res_name": "ASP",
+      "coords": [
+        -2.8355,
+        -6.1785,
+        -13.8118
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 83,
+      "res_name": "ASP",
+      "coords": [
+        -5.6545,
+        -4.5174,
+        -11.8168
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 84,
+      "res_name": "ILE",
+      "coords": [
+        -5.9725,
+        -7.7335,
+        -9.8208
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 85,
+      "res_name": "SER",
+      "coords": [
+        -2.2225,
+        -8.1995,
+        -9.2878
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 86,
+      "res_name": "ILE",
+      "coords": [
+        -1.6925,
+        -4.5475,
+        -8.3158
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 87,
+      "res_name": "THR",
+      "coords": [
+        -4.6405,
+        -4.4075,
+        -5.9128
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 88,
+      "res_name": "TYR",
+      "coords": [
+        -3.4145,
+        -7.5815,
+        -4.2128
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 89,
+      "res_name": "ALA",
+      "coords": [
+        0.2635,
+        -6.5185,
+        -4.1688
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 90,
+      "res_name": "VAL",
+      "coords": [
+        -0.4315,
+        -3.2215,
+        -2.4218
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 91,
+      "res_name": "ALA",
+      "coords": [
+        -2.4445,
+        -5.0295,
+        0.2632
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 92,
+      "res_name": "LEU",
+      "coords": [
+        0.2625,
+        -7.6745,
+        0.7192
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 93,
+      "res_name": "GLN",
+      "coords": [
+        2.9715,
+        -5.0125,
+        1.1052
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 94,
+      "res_name": "LEU",
+      "coords": [
+        0.8345,
+        -3.5174,
+        3.8952
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 95,
+      "res_name": "VAL",
+      "coords": [
+        0.5735,
+        -6.9075,
+        5.6092
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 96,
+      "res_name": "ALA",
+      "coords": [
+        4.2755,
+        -7.7125,
+        5.1822
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 97,
+      "res_name": "SER",
+      "coords": [
+        5.6785,
+        -4.4665,
+        6.5812
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 98,
+      "res_name": "THR",
+      "coords": [
+        3.3625,
+        -4.5285,
+        9.6002
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 99,
+      "res_name": "ALA",
+      "coords": [
+        3.9465,
+        -8.2375,
+        10.2992
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 100,
+      "res_name": "SER",
+      "coords": [
+        7.7105,
+        -7.5955,
+        10.2452
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 101,
+      "res_name": "GLY",
+      "coords": [
+        7.4405,
+        -4.4945,
+        12.4542
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 102,
+      "res_name": "LEU",
+      "coords": [
+        5.4345,
+        -6.3655,
+        15.1052
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 103,
+      "res_name": "LYS",
+      "coords": [
+        8.3295,
+        -8.7534,
+        15.7942
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 104,
+      "res_name": "GLN",
+      "coords": [
+        9.9655,
+        -6.1225,
+        18.0162
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 105,
+      "res_name": "VAL",
+      "coords": [
+        6.9885,
+        -5.8115,
+        20.4102
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 106,
+      "res_name": "ASN",
+      "coords": [
+        8.4015,
+        -7.1025,
+        23.7132
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 107,
+      "res_name": "SER",
+      "coords": [
+        4.9715,
+        -7.7814,
+        25.2352
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 108,
+      "res_name": "LEU",
+      "coords": [
+        4.2805,
+        -10.5244,
+        22.7112
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 109,
+      "res_name": "THR",
+      "coords": [
+        4.9485,
+        -14.1645,
+        23.4982
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 110,
+      "res_name": "THR",
+      "coords": [
+        3.1025,
+        -15.6025,
+        20.4892
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 111,
+      "res_name": "TYR",
+      "coords": [
+        4.6715,
+        -13.8285,
+        17.4922
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 112,
+      "res_name": "SER",
+      "coords": [
+        6.1065,
+        -16.8885,
+        15.7332
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 113,
+      "res_name": "THR",
+      "coords": [
+        2.8185,
+        -18.7315,
+        16.2572
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 114,
+      "res_name": "MET",
+      "coords": [
+        0.6305,
+        -15.9735,
+        14.8352
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 115,
+      "res_name": "MET",
+      "coords": [
+        2.8685,
+        -15.8265,
+        11.7622
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 116,
+      "res_name": "SER",
+      "coords": [
+        2.9235,
+        -19.6195,
+        11.3812
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 117,
+      "res_name": "ASP",
+      "coords": [
+        -0.8805,
+        -19.5655,
+        11.2572
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 118,
+      "res_name": "LEU",
+      "coords": [
+        -0.9175,
+        -16.6345,
+        8.8132
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 119,
+      "res_name": "ASP",
+      "coords": [
+        1.7405,
+        -18.0215,
+        6.4362
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 120,
+      "res_name": "PRO",
+      "coords": [
+        -0.1915,
+        -21.0115,
+        4.9602
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 121,
+      "res_name": "ALA",
+      "coords": [
+        -3.2855,
+        -18.8155,
+        4.4922
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 122,
+      "res_name": "ILE",
+      "coords": [
+        -1.3465,
+        -16.2255,
+        2.4792
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 123,
+      "res_name": "ALA",
+      "coords": [
+        0.4515,
+        -18.9755,
+        0.5402
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 124,
+      "res_name": "ALA",
+      "coords": [
+        -2.8675,
+        -20.6915,
+        -0.2668
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 125,
+      "res_name": "LEU",
+      "coords": [
+        -4.0925,
+        -17.3855,
+        -1.7008
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 126,
+      "res_name": "HIS",
+      "coords": [
+        -0.9685,
+        -17.0495,
+        -3.8618
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 127,
+      "res_name": "VAL",
+      "coords": [
+        -1.3875,
+        -20.5795,
+        -5.2228
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 128,
+      "res_name": "ALA",
+      "coords": [
+        -5.1155,
+        -20.1415,
+        -5.8578
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 129,
+      "res_name": "LEU",
+      "coords": [
+        -4.5945,
+        -16.7645,
+        -7.5138
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 130,
+      "res_name": "ASN",
+      "coords": [
+        -1.7445,
+        -17.8905,
+        -9.7588
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 131,
+      "res_name": "ARG",
+      "coords": [
+        -3.6525,
+        -21.0095,
+        -10.8398
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 132,
+      "res_name": "THR",
+      "coords": [
+        -7.0425,
+        -19.3415,
+        -11.3588
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 133,
+      "res_name": "LEU",
+      "coords": [
+        -5.5615,
+        -16.3475,
+        -13.1958
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 134,
+      "res_name": "PRO",
+      "coords": [
+        -2.3985,
+        -17.8905,
+        -14.6658
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 135,
+      "res_name": "ASN",
+      "coords": [
+        0.8025,
+        -15.9165,
+        -13.9708
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 136,
+      "res_name": "SER",
+      "coords": [
+        -1.0335,
+        -13.1065,
+        -12.1548
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 137,
+      "res_name": "ILE",
+      "coords": [
+        1.4285,
+        -13.6265,
+        -9.2918
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 138,
+      "res_name": "ASN",
+      "coords": [
+        4.3295,
+        -12.4305,
+        -11.4688
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 139,
+      "res_name": "LEU",
+      "coords": [
+        3.5485,
+        -8.7205,
+        -11.1778
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 140,
+      "res_name": "VAL",
+      "coords": [
+        2.8745,
+        -9.2105,
+        -7.4648
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 141,
+      "res_name": "ARG",
+      "coords": [
+        6.4005,
+        -10.5965,
+        -7.1148
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 142,
+      "res_name": "VAL",
+      "coords": [
+        7.8445,
+        -7.6185,
+        -9.0008
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 143,
+      "res_name": "MET",
+      "coords": [
+        6.0315,
+        -5.2115,
+        -6.6468
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 144,
+      "res_name": "MET",
+      "coords": [
+        7.3535,
+        -7.2275,
+        -3.6618
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 145,
+      "res_name": "LEU",
+      "coords": [
+        10.9925,
+        -7.1704,
+        -4.8158
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 146,
+      "res_name": "ASP",
+      "coords": [
+        12.0145,
+        -5.1564,
+        -1.7328
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 147,
+      "res_name": "ALA",
+      "coords": [
+        9.1175,
+        -5.9355,
+        0.6242
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 148,
+      "res_name": "GLN",
+      "coords": [
+        9.9145,
+        -9.6525,
+        0.5042
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 149,
+      "res_name": "GLN",
+      "coords": [
+        12.5605,
+        -8.8255,
+        3.1162
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 150,
+      "res_name": "PHE",
+      "coords": [
+        9.6855,
+        -8.1445,
+        5.5192
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 151,
+      "res_name": "LEU",
+      "coords": [
+        8.2785,
+        -11.6165,
+        4.8002
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 152,
+      "res_name": "THR",
+      "coords": [
+        11.6375,
+        -13.1735,
+        5.6652
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 153,
+      "res_name": "GLN",
+      "coords": [
+        11.9315,
+        -11.2345,
+        8.9342
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 154,
+      "res_name": "ALA",
+      "coords": [
+        8.3505,
+        -12.2324,
+        9.8322
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 155,
+      "res_name": "GLY",
+      "coords": [
+        9.0585,
+        -15.8965,
+        9.0722
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 156,
+      "res_name": "LEU",
+      "coords": [
+        6.3985,
+        -15.8555,
+        6.3542
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 157,
+      "res_name": "THR",
+      "coords": [
+        8.4545,
+        -18.2565,
+        4.2942
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 158,
+      "res_name": "GLN",
+      "coords": [
+        5.6695,
+        -20.0195,
+        2.3802
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 159,
+      "res_name": "SER",
+      "coords": [
+        4.1625,
+        -16.6105,
+        1.5502
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 160,
+      "res_name": "ARG",
+      "coords": [
+        7.4975,
+        -15.5055,
+        0.1142
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 161,
+      "res_name": "ALA",
+      "coords": [
+        8.2465,
+        -18.7475,
+        -1.7558
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 162,
+      "res_name": "SER",
+      "coords": [
+        4.7945,
+        -18.8995,
+        -3.3428
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 163,
+      "res_name": "LEU",
+      "coords": [
+        5.3945,
+        -15.4655,
+        -4.8778
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 164,
+      "res_name": "GLY",
+      "coords": [
+        8.3805,
+        -16.9145,
+        -6.7288
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 165,
+      "res_name": "PHE",
+      "coords": [
+        11.3055,
+        -15.7925,
+        -4.5348
+      ]
+    },
+    {
+      "chain": "A",
+      "res_seq": 166,
+      "res_name": "ALA",
+      "coords": [
+        14.1985,
+        -18.2305,
+        -4.2078
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 7,
+      "res_name": "GLN",
+      "coords": [
+        -23.7765,
+        18.6146,
+        6.6562
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 8,
+      "res_name": "SER",
+      "coords": [
+        -22.5915,
+        21.4635,
+        4.3722
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 9,
+      "res_name": "SER",
+      "coords": [
+        -19.6675,
+        21.9336,
+        6.7722
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 10,
+      "res_name": "ASN",
+      "coords": [
+        -18.3865,
+        18.3716,
+        6.1872
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 11,
+      "res_name": "THR",
+      "coords": [
+        -16.1845,
+        18.4415,
+        3.0792
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 12,
+      "res_name": "ASN",
+      "coords": [
+        -14.7715,
+        14.9225,
+        3.5922
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 13,
+      "res_name": "PRO",
+      "coords": [
+        -16.4545,
+        13.6095,
+        0.3802
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 14,
+      "res_name": "ALA",
+      "coords": [
+        -14.4945,
+        16.1255,
+        -1.6938
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 15,
+      "res_name": "ILE",
+      "coords": [
+        -11.2705,
+        15.4885,
+        0.2292
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 16,
+      "res_name": "TYR",
+      "coords": [
+        -11.6105,
+        11.6995,
+        -0.0458
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 17,
+      "res_name": "GLN",
+      "coords": [
+        -12.3595,
+        12.0125,
+        -3.7518
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 18,
+      "res_name": "ALA",
+      "coords": [
+        -9.1595,
+        13.9845,
+        -4.3338
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 19,
+      "res_name": "ILE",
+      "coords": [
+        -7.1425,
+        11.4756,
+        -2.2788
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 20,
+      "res_name": "SER",
+      "coords": [
+        -8.7985,
+        8.5895,
+        -4.1378
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 21,
+      "res_name": "VAL",
+      "coords": [
+        -7.9255,
+        10.1055,
+        -7.5408
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 22,
+      "res_name": "LEU",
+      "coords": [
+        -4.3285,
+        10.5185,
+        -6.3578
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 23,
+      "res_name": "SER",
+      "coords": [
+        -4.2035,
+        6.9455,
+        -5.0578
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 24,
+      "res_name": "GLN",
+      "coords": [
+        -5.5375,
+        5.6465,
+        -8.3858
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 25,
+      "res_name": "GLN",
+      "coords": [
+        -2.7595,
+        7.4756,
+        -10.2368
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 26,
+      "res_name": "ILE",
+      "coords": [
+        -0.0995,
+        6.1745,
+        -7.8288
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 27,
+      "res_name": "HIS",
+      "coords": [
+        -1.4105,
+        2.6545,
+        -8.5218
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 28,
+      "res_name": "VAL",
+      "coords": [
+        -0.5425,
+        3.2905,
+        -12.1958
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 29,
+      "res_name": "ASN",
+      "coords": [
+        2.8525,
+        5.0025,
+        -12.0008
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 30,
+      "res_name": "ILE",
+      "coords": [
+        4.3785,
+        2.9896,
+        -9.1598
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 31,
+      "res_name": "PRO",
+      "coords": [
+        3.8155,
+        -0.4725,
+        -10.7538
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 32,
+      "res_name": "GLU",
+      "coords": [
+        5.1985,
+        0.8885,
+        -14.0248
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 33,
+      "res_name": "LEU",
+      "coords": [
+        8.3395,
+        2.0975,
+        -12.2188
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 34,
+      "res_name": "ASN",
+      "coords": [
+        8.6105,
+        -1.2945,
+        -10.5238
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 35,
+      "res_name": "THR",
+      "coords": [
+        8.5045,
+        -3.1515,
+        -13.8478
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 36,
+      "res_name": "LEU",
+      "coords": [
+        10.8825,
+        -0.6615,
+        -15.4918
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 37,
+      "res_name": "GLN",
+      "coords": [
+        13.4035,
+        -1.2185,
+        -12.7168
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 38,
+      "res_name": "ALA",
+      "coords": [
+        12.9995,
+        -5.0085,
+        -12.7398
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 39,
+      "res_name": "SER",
+      "coords": [
+        13.2575,
+        -5.2495,
+        -16.5278
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 40,
+      "res_name": "GLY",
+      "coords": [
+        16.3165,
+        -3.0145,
+        -16.8528
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 41,
+      "res_name": "GLY",
+      "coords": [
+        14.1975,
+        -0.4655,
+        -18.7408
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 42,
+      "res_name": "ALA",
+      "coords": [
+        14.6245,
+        2.2676,
+        -16.1168
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 43,
+      "res_name": "THR",
+      "coords": [
+        16.3335,
+        5.3105,
+        -17.6488
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 44,
+      "res_name": "ASP",
+      "coords": [
+        16.2665,
+        9.0485,
+        -17.0088
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 45,
+      "res_name": "LEU",
+      "coords": [
+        13.5895,
+        9.2495,
+        -19.7188
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 46,
+      "res_name": "THR",
+      "coords": [
+        11.2975,
+        6.3915,
+        -18.6598
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 47,
+      "res_name": "VAL",
+      "coords": [
+        11.6065,
+        7.0215,
+        -14.9158
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 48,
+      "res_name": "GLY",
+      "coords": [
+        11.3015,
+        10.7746,
+        -15.3948
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 49,
+      "res_name": "ASN",
+      "coords": [
+        8.0705,
+        10.3425,
+        -17.3478
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 50,
+      "res_name": "GLU",
+      "coords": [
+        6.4635,
+        8.3165,
+        -14.5498
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 51,
+      "res_name": "LEU",
+      "coords": [
+        7.7235,
+        10.6496,
+        -11.8238
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 52,
+      "res_name": "ASP",
+      "coords": [
+        6.4725,
+        13.6855,
+        -13.7568
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 53,
+      "res_name": "GLU",
+      "coords": [
+        3.0035,
+        12.1405,
+        -13.8298
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 54,
+      "res_name": "LEU",
+      "coords": [
+        3.2545,
+        11.3735,
+        -10.1018
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 55,
+      "res_name": "THR",
+      "coords": [
+        4.4125,
+        14.9085,
+        -9.3308
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 56,
+      "res_name": "ASP",
+      "coords": [
+        1.5005,
+        16.2965,
+        -11.3538
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 57,
+      "res_name": "ALA",
+      "coords": [
+        -0.9825,
+        14.0975,
+        -9.4718
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 58,
+      "res_name": "PHE",
+      "coords": [
+        0.2955,
+        15.2055,
+        -6.0638
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 59,
+      "res_name": "THR",
+      "coords": [
+        0.1805,
+        18.8185,
+        -7.2598
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 60,
+      "res_name": "LEU",
+      "coords": [
+        -3.4145,
+        18.4616,
+        -8.4478
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 61,
+      "res_name": "ALA",
+      "coords": [
+        -4.4775,
+        16.7005,
+        -5.2408
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 62,
+      "res_name": "ALA",
+      "coords": [
+        -2.8595,
+        19.4115,
+        -3.1308
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 63,
+      "res_name": "ALA",
+      "coords": [
+        -4.4905,
+        22.2356,
+        -5.1048
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 64,
+      "res_name": "THR",
+      "coords": [
+        -7.9115,
+        20.5675,
+        -5.0208
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 65,
+      "res_name": "ILE",
+      "coords": [
+        -7.6805,
+        20.0635,
+        -1.2778
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 66,
+      "res_name": "ALA",
+      "coords": [
+        -6.2085,
+        23.5365,
+        -0.6738
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 67,
+      "res_name": "ASN",
+      "coords": [
+        -9.1145,
+        25.0735,
+        -2.6058
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 68,
+      "res_name": "THR",
+      "coords": [
+        -11.6065,
+        22.9316,
+        -0.6598
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 69,
+      "res_name": "ALA",
+      "coords": [
+        -13.2155,
+        24.6655,
+        2.2982
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 70,
+      "res_name": "VAL",
+      "coords": [
+        -12.0085,
+        23.4056,
+        5.6762
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 71,
+      "res_name": "SER",
+      "coords": [
+        -13.9415,
+        20.3465,
+        6.8322
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 72,
+      "res_name": "SER",
+      "coords": [
+        -15.8635,
+        19.9056,
+        10.0422
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 73,
+      "res_name": "GLY",
+      "coords": [
+        -14.8455,
+        16.2565,
+        9.6762
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 74,
+      "res_name": "ASP",
+      "coords": [
+        -16.7325,
+        13.0106,
+        10.1462
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 75,
+      "res_name": "THR",
+      "coords": [
+        -15.9105,
+        9.9546,
+        12.2632
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 76,
+      "res_name": "THR",
+      "coords": [
+        -18.9735,
+        7.7835,
+        11.6922
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 77,
+      "res_name": "ASN",
+      "coords": [
+        -20.1315,
+        7.9395,
+        8.0522
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 78,
+      "res_name": "PHE",
+      "coords": [
+        -18.0455,
+        7.0685,
+        5.0082
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 79,
+      "res_name": "PRO",
+      "coords": [
+        -15.6785,
+        8.6766,
+        4.1222
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 80,
+      "res_name": "THR",
+      "coords": [
+        -14.4535,
+        9.2095,
+        7.6902
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 81,
+      "res_name": "ASN",
+      "coords": [
+        -11.3345,
+        11.1295,
+        8.6472
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 82,
+      "res_name": "ASP",
+      "coords": [
+        -9.6625,
+        7.7485,
+        9.0872
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 83,
+      "res_name": "ASP",
+      "coords": [
+        -10.8305,
+        6.5705,
+        5.6592
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 84,
+      "res_name": "ILE",
+      "coords": [
+        -8.9895,
+        9.5615,
+        4.2172
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 85,
+      "res_name": "SER",
+      "coords": [
+        -5.8725,
+        9.1205,
+        6.3402
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 86,
+      "res_name": "ILE",
+      "coords": [
+        -5.5735,
+        5.3805,
+        5.6902
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 87,
+      "res_name": "THR",
+      "coords": [
+        -6.1895,
+        5.6115,
+        1.9432
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 88,
+      "res_name": "TYR",
+      "coords": [
+        -3.5225,
+        8.3005,
+        1.6672
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 89,
+      "res_name": "ALA",
+      "coords": [
+        -1.0105,
+        6.5825,
+        3.9572
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 90,
+      "res_name": "VAL",
+      "coords": [
+        -1.1665,
+        3.3635,
+        1.9372
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 91,
+      "res_name": "ALA",
+      "coords": [
+        -0.5045,
+        5.2975,
+        -1.2748
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 92,
+      "res_name": "LEU",
+      "coords": [
+        2.3425,
+        7.2655,
+        0.3322
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 93,
+      "res_name": "GLN",
+      "coords": [
+        4.0345,
+        4.0625,
+        1.5592
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 94,
+      "res_name": "LEU",
+      "coords": [
+        3.8975,
+        2.8415,
+        -2.0458
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 95,
+      "res_name": "VAL",
+      "coords": [
+        5.5395,
+        6.0395,
+        -3.3008
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 96,
+      "res_name": "ALA",
+      "coords": [
+        8.1585,
+        6.1745,
+        -0.5478
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 97,
+      "res_name": "SER",
+      "coords": [
+        9.4295,
+        2.6055,
+        -0.8938
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 98,
+      "res_name": "THR",
+      "coords": [
+        9.6485,
+        2.8996,
+        -4.6928
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 99,
+      "res_name": "ALA",
+      "coords": [
+        11.3535,
+        6.3185,
+        -4.5488
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 100,
+      "res_name": "SER",
+      "coords": [
+        13.9435,
+        4.8555,
+        -2.1628
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 101,
+      "res_name": "GLY",
+      "coords": [
+        14.4365,
+        1.7746,
+        -4.3438
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 102,
+      "res_name": "LEU",
+      "coords": [
+        14.9875,
+        3.8815,
+        -7.4638
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 103,
+      "res_name": "LYS",
+      "coords": [
+        18.1905,
+        5.1915,
+        -5.8598
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 104,
+      "res_name": "GLN",
+      "coords": [
+        19.7265,
+        1.8115,
+        -6.7618
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 105,
+      "res_name": "VAL",
+      "coords": [
+        19.3105,
+        2.3525,
+        -10.5318
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 106,
+      "res_name": "ASN",
+      "coords": [
+        22.9265,
+        3.1976,
+        -11.3548
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 107,
+      "res_name": "SER",
+      "coords": [
+        22.0005,
+        4.2555,
+        -14.9058
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 108,
+      "res_name": "LEU",
+      "coords": [
+        20.0765,
+        7.2965,
+        -13.6288
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 109,
+      "res_name": "THR",
+      "coords": [
+        21.8895,
+        10.6205,
+        -13.7288
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 110,
+      "res_name": "THR",
+      "coords": [
+        18.9935,
+        12.8635,
+        -12.5998
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 111,
+      "res_name": "TYR",
+      "coords": [
+        17.7955,
+        11.0225,
+        -9.4768
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 112,
+      "res_name": "SER",
+      "coords": [
+        18.3635,
+        13.7985,
+        -6.9318
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 113,
+      "res_name": "THR",
+      "coords": [
+        16.7995,
+        16.3485,
+        -9.2818
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 114,
+      "res_name": "MET",
+      "coords": [
+        13.7495,
+        14.1356,
+        -9.8328
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 115,
+      "res_name": "MET",
+      "coords": [
+        13.3195,
+        13.6515,
+        -6.0778
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 116,
+      "res_name": "SER",
+      "coords": [
+        13.7575,
+        17.3805,
+        -5.4798
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 117,
+      "res_name": "ASP",
+      "coords": [
+        10.8565,
+        18.0815,
+        -7.8358
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 118,
+      "res_name": "LEU",
+      "coords": [
+        8.6795,
+        15.3455,
+        -6.3008
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 119,
+      "res_name": "ASP",
+      "coords": [
+        9.3325,
+        16.2536,
+        -2.6358
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 120,
+      "res_name": "PRO",
+      "coords": [
+        7.5135,
+        19.6556,
+        -2.6488
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 121,
+      "res_name": "ALA",
+      "coords": [
+        4.4865,
+        18.1696,
+        -4.4008
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 122,
+      "res_name": "ILE",
+      "coords": [
+        4.0935,
+        15.4735,
+        -1.7338
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 123,
+      "res_name": "ALA",
+      "coords": [
+        4.7835,
+        17.9315,
+        1.0802
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 124,
+      "res_name": "ALA",
+      "coords": [
+        2.3125,
+        20.4606,
+        -0.3588
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 125,
+      "res_name": "LEU",
+      "coords": [
+        -0.3315,
+        17.7385,
+        -0.1708
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 126,
+      "res_name": "HIS",
+      "coords": [
+        0.6035,
+        17.0465,
+        3.4632
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 127,
+      "res_name": "VAL",
+      "coords": [
+        0.2545,
+        20.6775,
+        4.5322
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 128,
+      "res_name": "ALA",
+      "coords": [
+        -2.9045,
+        21.1536,
+        2.4462
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 129,
+      "res_name": "LEU",
+      "coords": [
+        -4.4805,
+        18.0695,
+        4.0142
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 130,
+      "res_name": "ASN",
+      "coords": [
+        -3.4625,
+        19.0716,
+        7.5472
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 131,
+      "res_name": "ARG",
+      "coords": [
+        -5.0055,
+        22.5125,
+        6.9602
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 132,
+      "res_name": "THR",
+      "coords": [
+        -8.2225,
+        21.4065,
+        5.2302
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 133,
+      "res_name": "LEU",
+      "coords": [
+        -8.8045,
+        18.3845,
+        7.5102
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 134,
+      "res_name": "PRO",
+      "coords": [
+        -7.2895,
+        19.2135,
+        10.9062
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 135,
+      "res_name": "ASN",
+      "coords": [
+        -5.4805,
+        16.3016,
+        12.6002
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 136,
+      "res_name": "SER",
+      "coords": [
+        -5.8125,
+        13.9575,
+        9.5872
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 137,
+      "res_name": "ILE",
+      "coords": [
+        -2.0225,
+        13.6775,
+        9.3192
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 138,
+      "res_name": "ASN",
+      "coords": [
+        -1.7015,
+        12.0735,
+        12.7762
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 139,
+      "res_name": "LEU",
+      "coords": [
+        -2.8425,
+        8.6515,
+        11.5832
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 140,
+      "res_name": "VAL",
+      "coords": [
+        -0.7195,
+        9.0495,
+        8.4432
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 141,
+      "res_name": "ARG",
+      "coords": [
+        2.2975,
+        9.6775,
+        10.6852
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 142,
+      "res_name": "VAL",
+      "coords": [
+        1.4795,
+        6.5545,
+        12.7102
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 143,
+      "res_name": "MET",
+      "coords": [
+        1.2655,
+        4.4275,
+        9.5772
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 144,
+      "res_name": "MET",
+      "coords": [
+        4.5685,
+        5.9315,
+        8.3522
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 145,
+      "res_name": "LEU",
+      "coords": [
+        6.5185,
+        5.3145,
+        11.5692
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 146,
+      "res_name": "ASP",
+      "coords": [
+        8.7545,
+        2.8165,
+        9.7682
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 147,
+      "res_name": "ALA",
+      "coords": [
+        8.1915,
+        3.9035,
+        6.1512
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 148,
+      "res_name": "GLN",
+      "coords": [
+        9.5475,
+        7.3985,
+        6.8692
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 149,
+      "res_name": "GLN",
+      "coords": [
+        13.0255,
+        5.8175,
+        6.5792
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 150,
+      "res_name": "PHE",
+      "coords": [
+        12.2865,
+        5.3955,
+        2.8622
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 151,
+      "res_name": "LEU",
+      "coords": [
+        11.6215,
+        9.1325,
+        2.6492
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 152,
+      "res_name": "THR",
+      "coords": [
+        14.9755,
+        9.8245,
+        4.3272
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 153,
+      "res_name": "GLN",
+      "coords": [
+        16.7945,
+        7.4875,
+        1.9422
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 154,
+      "res_name": "ALA",
+      "coords": [
+        15.1525,
+        9.0535,
+        -1.1198
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 155,
+      "res_name": "GLY",
+      "coords": [
+        15.9415,
+        12.5605,
+        0.1052
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 156,
+      "res_name": "LEU",
+      "coords": [
+        12.2245,
+        13.3725,
+        0.4092
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 157,
+      "res_name": "THR",
+      "coords": [
+        12.8305,
+        15.5036,
+        3.4752
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 158,
+      "res_name": "GLN",
+      "coords": [
+        10.0225,
+        18.0375,
+        2.9892
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 159,
+      "res_name": "SER",
+      "coords": [
+        7.6005,
+        15.1105,
+        2.7552
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 160,
+      "res_name": "ARG",
+      "coords": [
+        8.9545,
+        13.7005,
+        6.0052
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 161,
+      "res_name": "ALA",
+      "coords": [
+        8.9885,
+        17.0726,
+        7.7862
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 162,
+      "res_name": "SER",
+      "coords": [
+        5.3965,
+        17.8025,
+        6.7472
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 163,
+      "res_name": "LEU",
+      "coords": [
+        4.2645,
+        14.6205,
+        8.5202
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 164,
+      "res_name": "GLY",
+      "coords": [
+        5.4525,
+        15.9275,
+        11.8902
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 165,
+      "res_name": "PHE",
+      "coords": [
+        8.7125,
+        13.9686,
+        12.0562
+      ]
+    },
+    {
+      "chain": "B",
+      "res_seq": 166,
+      "res_name": "ALA",
+      "coords": [
+        11.6615,
+        15.7565,
+        13.6442
+      ]
+    }
+  ]
+}

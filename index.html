@@ -208,12 +208,6 @@
     </select>
   </div>
 
-  <div class="field-label" style="margin-top:14px">Depth of Field</div>
-  <div class="row">
-    <input type="range" id="dof-slider" min="0" max="100" value="35" step="1">
-    <span id="dof-display" style="font-size:11px;color:#4466cc;min-width:42px;text-align:right;flex-shrink:0">35%</span>
-  </div>
-
   <div id="info"></div>
 
   <div class="legend">
@@ -239,19 +233,16 @@ import { OrbitControls }        from 'three/addons/controls/OrbitControls.js';
 import { Line2 }                from 'three/addons/lines/Line2.js';
 import { LineGeometry }         from 'three/addons/lines/LineGeometry.js';
 import { LineMaterial }         from 'three/addons/lines/LineMaterial.js';
-import { EffectComposer }       from 'three/addons/postprocessing/EffectComposer.js';
-import { RenderPass }           from 'three/addons/postprocessing/RenderPass.js';
-import { BokehPass }            from 'three/addons/postprocessing/BokehPass.js';
 
 // ── scene setup ─────────────────────────────────────────────────────────────
 const scene    = new THREE.Scene();
 scene.background = new THREE.Color(0x07090f);
-scene.fog        = new THREE.FogExp2(0x07090f, 0.0035);
+scene.fog        = new THREE.FogExp2(0x07090f, 0.012);
 
-const camera = new THREE.PerspectiveCamera(42, innerWidth / innerHeight, 0.5, 2000);
+const camera = new THREE.PerspectiveCamera(45, innerWidth / innerHeight, 1, 800);
 camera.position.set(0, 0, 140);
 
-const renderer = new THREE.WebGLRenderer({ antialias: true });
+const renderer = new THREE.WebGLRenderer({ antialias: true, depth: true });
 renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
 renderer.setSize(innerWidth, innerHeight);
 document.body.appendChild(renderer.domElement);
@@ -262,28 +253,18 @@ controls.dampingFactor  = 0.06;
 controls.minDistance    = 10;
 controls.maxDistance    = 800;
 
-// ── post-processing ───────────────────────────────────────────────────────────
-const composer  = new EffectComposer(renderer);
-composer.addPass(new RenderPass(scene, camera));
-const bokehPass = new BokehPass(scene, camera, {
-  focus:   100,
-  aperture: 0.35 * 0.004,
-  maxblur:  0.006,
-});
-composer.addPass(bokehPass);
-
 // lighting
-scene.add(new THREE.AmbientLight(0x2a3a66, 3.5));
+scene.add(new THREE.AmbientLight(0xffffff, 0.85));
 
-const sun = new THREE.DirectionalLight(0xffffff, 2.8);
-sun.position.set(3, 5, 4);
+const sun = new THREE.DirectionalLight(0xffffff, 1.4);
+sun.position.set(1, 1, 1);
 scene.add(sun);
 
-const fill = new THREE.DirectionalLight(0x4466ff, 1.2);
-fill.position.set(-4, -2, -3);
+const fill = new THREE.DirectionalLight(0xffffff, 0.5);
+fill.position.set(-1, 0.5, -0.5);
 scene.add(fill);
 
-const rim = new THREE.DirectionalLight(0xffeedd, 0.6);
+const rim = new THREE.DirectionalLight(0xffeedd, 0.3);
 rim.position.set(0, -5, 2);
 scene.add(rim);
 
@@ -298,16 +279,26 @@ function resColor(resSeq) {
 }
 
 // shared sphere geometry (reused across all transitions)
-const SPHERE_GEO = new THREE.SphereGeometry(0.55, 10, 7);
-const SPHERE_MAT = new THREE.MeshPhongMaterial({ shininess: 90 });
+const SPHERE_GEO = new THREE.SphereGeometry(0.9, 10, 7);
+const SPHERE_MAT = new THREE.MeshPhongMaterial({ shininess: 55, specular: 0x333333 });
 
-// break the backbone into segments at large sequence gaps
-function buildSegments(resSeqArr) {
-  const GAP = 6;
+// break the backbone into segments at chain breaks:
+//   - residue sequence goes backward (chain reset) or jumps forward by > 1
+//   - OR 3D Cα–Cα distance > 4.5 Å (peptide bond ~3.8 Å, allow some slack)
+function buildSegments(resSeqArr, frame0) {
+  const DIST2_MAX = 4.5 * 4.5;  // 20.25 Å²
   const segs = [];
   let start = 0;
   for (let i = 1; i < resSeqArr.length; i++) {
-    if (resSeqArr[i] - resSeqArr[i - 1] > GAP) {
+    const resDiff = resSeqArr[i] - resSeqArr[i - 1];
+    let isBreak = resDiff !== 1;   // consecutive residues must differ by exactly 1
+    if (!isBreak) {
+      // even if seq is consecutive, reject if 3D distance is too large
+      const a = frame0[i - 1], b = frame0[i];
+      const dx = b[0]-a[0], dy = b[1]-a[1], dz = b[2]-a[2];
+      if (dx*dx + dy*dy + dz*dz > DIST2_MAX) isBreak = true;
+    }
+    if (isBreak) {
       segs.push([start, i]);
       start = i;
     }
@@ -317,45 +308,65 @@ function buildSegments(resSeqArr) {
 }
 
 // ── per-transition state ─────────────────────────────────────────────────────
-let sphereMesh = null;         // InstancedMesh
-let backboneLines = [];        // Line2[]
-let currentTransition = null;
-let segmentMap = [];           // [{start,end,line2,lineGeo}]
+let sphereMesh         = null;   // InstancedMesh
+let backboneLines      = [];     // Line2[]
+let currentTransition  = null;
+let segmentMap         = [];     // [{start,end,geo}]
+let currentScales      = [];     // per-residue sphere scale (variance-driven)
+let baseColors         = [];     // per-residue THREE.Color for depth-contrast
+let currentInstanceColor = null; // live InstancedBufferAttribute
 
 function clearScene() {
-  if (sphereMesh)       { scene.remove(sphereMesh); sphereMesh.geometry.dispose(); sphereMesh = null; }
+  if (sphereMesh) { scene.remove(sphereMesh); sphereMesh = null; }  // SPHERE_GEO is shared — don't dispose
   backboneLines.forEach(l => { scene.remove(l); l.geometry.dispose(); l.material.dispose(); });
   backboneLines = [];
-  segmentMap = [];
+  segmentMap    = [];
 }
 
 function buildSceneForTransition(t) {
   clearScene();
   currentTransition = t;
-  const N   = t.n_residues;
-  const segs = buildSegments(t.res_seq);
+  const N    = t.n_residues;
+  const f0   = t.frames[0];
+  const segs = buildSegments(t.res_seq, f0);
 
-  // per-residue colours
-  const colArr = t.res_seq.map(rs => resColor(rs));
+  // ── per-residue flexibility: endpoint displacement across the transition ──
+  const fN = t.frames[t.frames.length - 1];
+  const disp = f0.map((p, i) => {
+    const q = fN[i];
+    return Math.sqrt((p[0]-q[0])**2 + (p[1]-q[1])**2 + (p[2]-q[2])**2);
+  });
+  const maxDisp = Math.max(...disp, 0.001);
+  const normDisp = disp.map(v => v / maxDisp);
+
+  // sphere scale 0.7 (rigid) → 1.3 (flexible)
+  currentScales = normDisp.map(v => 0.7 + v * 0.6);
+
+  // per-residue colours — local range so each transition uses the full rainbow
+  const localMin = Math.min(...t.res_seq);
+  const localMax = Math.max(...t.res_seq);
+  const localRange = Math.max(localMax - localMin, 1);
+  const colArr = t.res_seq.map(rs => {
+    const tt = Math.max(0, Math.min(1, (rs - localMin) / localRange));
+    return new THREE.Color().setHSL(tt * 0.75, 0.88, 0.72);
+  });
+  baseColors   = colArr.map(c => c.clone());
 
   // ── instanced CA spheres ────────────────────────────────────────────────
   sphereMesh = new THREE.InstancedMesh(SPHERE_GEO, SPHERE_MAT, N);
   const iColor = new THREE.InstancedBufferAttribute(new Float32Array(N * 3), 3);
   colArr.forEach((c, i) => iColor.setXYZ(i, c.r, c.g, c.b));
-  sphereMesh.instanceColor           = iColor;
+  sphereMesh.instanceColor             = iColor;
   sphereMesh.instanceColor.needsUpdate = true;
+  currentInstanceColor                 = iColor;
   scene.add(sphereMesh);
 
-  // ── Line2 backbone segments ─────────────────────────────────────────────
-  const lineMat = new LineMaterial({
-    vertexColors : true,
-    linewidth    : 2.5,       // pixels
-    resolution   : new THREE.Vector2(innerWidth, innerHeight),
-    alphaToCoverage: true,
-  });
-
+  // ── Line2 backbone — per-segment linewidth driven by avg flexibility ────
   segs.forEach(([s, e]) => {
-    if (e - s < 2) return;    // skip isolated points
+    if (e - s < 2) return;
+
+    const segAvg = normDisp.slice(s, e).reduce((a, b) => a + b, 0) / (e - s);
+    const lw     = 1.0 + segAvg * 3.0;   // 1 px (rigid) → 4 px (flexible)
 
     const count = e - s;
     const pos   = new Float32Array(count * 3);
@@ -364,15 +375,22 @@ function buildSceneForTransition(t) {
       cols[k * 3] = c.r; cols[k * 3 + 1] = c.g; cols[k * 3 + 2] = c.b;
     });
 
-    const geo = new LineGeometry();
-    geo.setPositions(pos);   // placeholder; updated by displayFrame
+    const geo     = new LineGeometry();
+    geo.setPositions(pos);
     geo.setColors(cols);
+
+    const lineMat = new LineMaterial({
+      vertexColors:    true,
+      linewidth:       lw,
+      resolution:      new THREE.Vector2(innerWidth, innerHeight),
+      alphaToCoverage: true,
+    });
 
     const line = new Line2(geo, lineMat);
     line.computeLineDistances();
     scene.add(line);
     backboneLines.push(line);
-    segmentMap.push({ start: s, end: e, line, geo });
+    segmentMap.push({ start: s, end: e, geo });
   });
 }
 
@@ -383,15 +401,34 @@ function displayFrame(frameIdx) {
   const frame = currentTransition.frames[frameIdx];
   const N     = frame.length;
 
-  // update sphere positions
+  // centroid of this frame (for depth contrast)
+  let cx = 0, cy = 0, cz = 0;
+  for (const p of frame) { cx += p[0]; cy += p[1]; cz += p[2]; }
+  cx /= N; cy /= N; cz /= N;
+  let maxDist = 0.001;
+  for (const p of frame) {
+    const d = Math.sqrt((p[0]-cx)**2 + (p[1]-cy)**2 + (p[2]-cz)**2);
+    if (d > maxDist) maxDist = d;
+  }
+
+  // update sphere positions + scale + depth-contrast colour
   for (let i = 0; i < N; i++) {
-    _dummy.position.fromArray(frame[i]);
+    const p = frame[i];
+    _dummy.position.fromArray(p);
+    _dummy.scale.setScalar(currentScales[i]);
     _dummy.updateMatrix();
     sphereMesh.setMatrixAt(i, _dummy.matrix);
+
+    // dim atoms at the periphery (max 15% at outer edge)
+    const dx = p[0]-cx, dy = p[1]-cy, dz = p[2]-cz;
+    const dim = 1.0 - Math.sqrt(dx*dx + dy*dy + dz*dz) / maxDist * 0.15;
+    const bc  = baseColors[i];
+    currentInstanceColor.setXYZ(i, bc.r * dim, bc.g * dim, bc.b * dim);
   }
   sphereMesh.instanceMatrix.needsUpdate = true;
+  sphereMesh.instanceColor.needsUpdate  = true;
 
-  // update Line2 segments
+  // update Line2 segment positions
   segmentMap.forEach(({ start, end, geo }) => {
     const count = end - start;
     const pos   = new Float32Array(count * 3);
@@ -408,10 +445,13 @@ function fitCameraToFrame(frame) {
   const box = new THREE.Box3();
   frame.forEach(p => box.expandByPoint(new THREE.Vector3(p[0], p[1], p[2])));
   const centre = box.getCenter(new THREE.Vector3());
-  const span   = box.getSize(new THREE.Vector3()).length();
+  const size   = box.getSize(new THREE.Vector3());
+  const maxDim = Math.max(size.x, size.y, size.z);
+  // FOV-aware: distance needed so maxDim fits in the vertical FOV with 30% margin
+  const dist   = (maxDim / 2) / Math.tan(camera.fov * Math.PI / 360) * 1.3;
   controls.target.copy(centre);
   camera.position.copy(centre).addScaledVector(
-    new THREE.Vector3(0.25, 0.25, 1).normalize(), span * 0.9
+    new THREE.Vector3(0.25, 0.25, 1).normalize(), dist
   );
   controls.update();
 }
@@ -432,17 +472,6 @@ function setFrame(idx) {
     `${currentFrame} / ${currentTransition.frames.length - 1}`;
 }
 
-// ── depth-of-field focus ──────────────────────────────────────────────────────
-const _focusPt = new THREE.Vector3();
-function updateFocus() {
-  if (!currentTransition) return;
-  const frame = currentTransition.frames[currentFrame];
-  let x = 0, y = 0, z = 0;
-  for (const p of frame) { x += p[0]; y += p[1]; z += p[2]; }
-  _focusPt.set(x / frame.length, y / frame.length, z / frame.length);
-  bokehPass.uniforms['focus'].value = camera.position.distanceTo(_focusPt);
-}
-
 // ── render loop ───────────────────────────────────────────────────────────────
 function animate(ts) {
   requestAnimationFrame(animate);
@@ -456,8 +485,7 @@ function animate(ts) {
   }
 
   controls.update();
-  updateFocus();
-  composer.render();
+  renderer.render(scene, camera);
 }
 
 // ── UI wiring ─────────────────────────────────────────────────────────────────
@@ -512,18 +540,10 @@ document.getElementById('reset-btn').addEventListener('click', () => {
   setFrame(0);
 });
 
-document.getElementById('dof-slider').addEventListener('input', e => {
-  const t = parseInt(e.target.value);
-  document.getElementById('dof-display').textContent = t + '%';
-  bokehPass.enabled = t > 0;
-  bokehPass.uniforms['aperture'].value = (t / 100) * 0.004;
-});
-
 window.addEventListener('resize', () => {
   camera.aspect = innerWidth / innerHeight;
   camera.updateProjectionMatrix();
   renderer.setSize(innerWidth, innerHeight);
-  composer.setSize(innerWidth, innerHeight);
   backboneLines.forEach(l => l.material.resolution.set(innerWidth, innerHeight));
 });
 
