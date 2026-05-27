@@ -208,6 +208,12 @@
     </select>
   </div>
 
+  <div class="field-label" style="margin-top:14px">Depth of Field</div>
+  <div class="row">
+    <input type="range" id="dof-slider" min="0" max="100" value="35" step="1">
+    <span id="dof-display" style="font-size:11px;color:#4466cc;min-width:42px;text-align:right;flex-shrink:0">35%</span>
+  </div>
+
   <div id="info"></div>
 
   <div class="legend">
@@ -233,6 +239,9 @@ import { OrbitControls }        from 'three/addons/controls/OrbitControls.js';
 import { Line2 }                from 'three/addons/lines/Line2.js';
 import { LineGeometry }         from 'three/addons/lines/LineGeometry.js';
 import { LineMaterial }         from 'three/addons/lines/LineMaterial.js';
+import { EffectComposer }       from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass }           from 'three/addons/postprocessing/RenderPass.js';
+import { BokehPass }            from 'three/addons/postprocessing/BokehPass.js';
 
 // ── scene setup ─────────────────────────────────────────────────────────────
 const scene    = new THREE.Scene();
@@ -252,6 +261,16 @@ controls.enableDamping  = true;
 controls.dampingFactor  = 0.06;
 controls.minDistance    = 10;
 controls.maxDistance    = 800;
+
+// ── post-processing ───────────────────────────────────────────────────────────
+const composer  = new EffectComposer(renderer);
+composer.addPass(new RenderPass(scene, camera));
+const bokehPass = new BokehPass(scene, camera, {
+  focus:   100,
+  aperture: 0.35 * 0.004,
+  maxblur:  0.006,
+});
+composer.addPass(bokehPass);
 
 // lighting
 scene.add(new THREE.AmbientLight(0x2a3a66, 3.5));
@@ -413,6 +432,17 @@ function setFrame(idx) {
     `${currentFrame} / ${currentTransition.frames.length - 1}`;
 }
 
+// ── depth-of-field focus ──────────────────────────────────────────────────────
+const _focusPt = new THREE.Vector3();
+function updateFocus() {
+  if (!currentTransition) return;
+  const frame = currentTransition.frames[currentFrame];
+  let x = 0, y = 0, z = 0;
+  for (const p of frame) { x += p[0]; y += p[1]; z += p[2]; }
+  _focusPt.set(x / frame.length, y / frame.length, z / frame.length);
+  bokehPass.uniforms['focus'].value = camera.position.distanceTo(_focusPt);
+}
+
 // ── render loop ───────────────────────────────────────────────────────────────
 function animate(ts) {
   requestAnimationFrame(animate);
@@ -426,12 +456,26 @@ function animate(ts) {
   }
 
   controls.update();
-  renderer.render(scene, camera);
+  updateFocus();
+  composer.render();
 }
 
 // ── UI wiring ─────────────────────────────────────────────────────────────────
-function loadTransition(idx, transitions) {
-  const t = transitions[idx];
+const _transCache = {};
+
+async function loadTransition(meta) {
+  const tid = meta.id;
+
+  let t = _transCache[tid];
+  if (!t) {
+    document.getElementById('info').innerHTML =
+      `<span style="color:#4466cc">Loading ${tid}…</span>`;
+    const resp = await fetch(`transitions/${tid}.json`);
+    if (!resp.ok) throw new Error(`HTTP ${resp.status} fetching ${tid}.json`);
+    t = await resp.json();
+    _transCache[tid] = t;
+  }
+
   buildSceneForTransition(t);
   setFrame(0);
   fitCameraToFrame(t.frames[0]);
@@ -468,22 +512,30 @@ document.getElementById('reset-btn').addEventListener('click', () => {
   setFrame(0);
 });
 
+document.getElementById('dof-slider').addEventListener('input', e => {
+  const t = parseInt(e.target.value);
+  document.getElementById('dof-display').textContent = t + '%';
+  bokehPass.enabled = t > 0;
+  bokehPass.uniforms['aperture'].value = (t / 100) * 0.004;
+});
+
 window.addEventListener('resize', () => {
   camera.aspect = innerWidth / innerHeight;
   camera.updateProjectionMatrix();
   renderer.setSize(innerWidth, innerHeight);
+  composer.setSize(innerWidth, innerHeight);
   backboneLines.forEach(l => l.material.resolution.set(innerWidth, innerHeight));
 });
 
-// ── load data ─────────────────────────────────────────────────────────────────
+// ── load index ────────────────────────────────────────────────────────────────
 (async () => {
   try {
-    const resp = await fetch('transitions.json');
+    const resp = await fetch('transitions/index.json');
     if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-    const data = await resp.json();
+    const index = await resp.json();
 
     // compute global residue range for consistent colouring
-    data.transitions.forEach(t =>
+    index.transitions.forEach(t =>
       t.res_seq.forEach(r => {
         if (r < gMinRes || gMinRes === 0) gMinRes = r;
         if (r > gMaxRes) gMaxRes = r;
@@ -492,7 +544,7 @@ window.addEventListener('resize', () => {
 
     // populate dropdown
     const sel = document.getElementById('transition-select');
-    data.transitions.forEach((t, i) => {
+    index.transitions.forEach((t, i) => {
       const from = t.from_members.join('+');
       const to   = t.to_members.join('+');
       const opt  = document.createElement('option');
@@ -502,19 +554,19 @@ window.addEventListener('resize', () => {
     });
 
     sel.addEventListener('change', e =>
-      loadTransition(parseInt(e.target.value), data.transitions)
+      loadTransition(index.transitions[parseInt(e.target.value)])
     );
 
     document.getElementById('loader').style.display = 'none';
     document.getElementById('panel').style.display  = 'block';
 
-    loadTransition(0, data.transitions);
     requestAnimationFrame(animate);
+    loadTransition(index.transitions[0]);
 
   } catch (err) {
     const el = document.getElementById('loader');
     el.innerHTML =
-      `<span style="color:#884444">Failed to load transitions.json</span>` +
+      `<span style="color:#884444">Failed to load transitions/index.json</span>` +
       `<span class="sub">${err.message}</span>` +
       `<span class="sub">Run:  python3 -m http.server  then open  http://localhost:8000</span>`;
   }
