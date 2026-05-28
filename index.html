@@ -2,56 +2,70 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Adenylate Kinase Viewer</title>
+<title>Adenylate Kinase AR Viewer</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { background: #111; overflow: hidden; font-family: monospace; color: #ccc; }
   canvas { display: block; }
 
+  /* ── loader ──────────────────────────────────────────────────────────────── */
+  #loader {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
+    background: #111; color: #333; font-size: 12px; letter-spacing: .12em; z-index: 99;
+  }
+  #loader .sub { font-size: 9px; color: #222; }
+
+  /* ── desktop panel ───────────────────────────────────────────────────────── */
   #panel {
     position: absolute; top: 16px; left: 16px; z-index: 10;
-    width: 310px;
-    background: rgba(0,0,0,0.72);
-    border: 1px solid #2a2a2a;
-    border-radius: 6px;
-    padding: 14px;
+    width: 310px; background: rgba(0,0,0,.72);
+    border: 1px solid #2a2a2a; border-radius: 6px; padding: 14px;
   }
-  #panel h1 { font-size: 10px; letter-spacing: 0.18em; color: #555; text-transform: uppercase; margin-bottom: 12px; }
-  .lbl { font-size: 9px; letter-spacing: 0.12em; color: #444; text-transform: uppercase; margin-top: 10px; margin-bottom: 4px; display: flex; justify-content: space-between; }
-  select {
-    width: 100%; background: #1a1a1a; color: #bbb;
-    border: 1px solid #2e2e2e; border-radius: 3px;
-    padding: 5px 6px; font-family: monospace; font-size: 10px; cursor: pointer;
-  }
+  #panel h1 { font-size: 10px; letter-spacing: .18em; color: #555; text-transform: uppercase; margin-bottom: 12px; }
+  .lbl { font-size: 9px; letter-spacing: .12em; color: #444; text-transform: uppercase; margin-top: 10px; margin-bottom: 4px; display: flex; justify-content: space-between; }
+  select { width: 100%; background: #1a1a1a; color: #bbb; border: 1px solid #2e2e2e; border-radius: 3px; padding: 5px 6px; font-family: monospace; font-size: 10px; cursor: pointer; }
   select option { background: #111; }
-  input[type=range] {
-    width: 100%; accent-color: #3366cc; cursor: pointer;
-    height: 3px; margin-top: 2px;
-  }
+  input[type=range] { width: 100%; accent-color: #3366cc; cursor: pointer; }
   .row { display: flex; gap: 6px; margin-top: 10px; }
-  button {
-    flex: 1; background: #1a1a1a; color: #999;
-    border: 1px solid #2e2e2e; border-radius: 3px;
-    padding: 6px 4px; font-family: monospace; font-size: 10px; cursor: pointer;
-  }
+  button { flex: 1; background: #1a1a1a; color: #999; border: 1px solid #2e2e2e; border-radius: 3px; padding: 6px 4px; font-family: monospace; font-size: 10px; cursor: pointer; }
   button:hover { background: #222; color: #ccc; }
   #speed-sel { flex: 0 0 auto; width: auto; }
   #info { margin-top: 12px; font-size: 9px; color: #3a3a3a; line-height: 1.7; }
   #info .hi { color: #555; }
 
-  #loader {
-    position: absolute; inset: 0; display: flex; flex-direction: column;
-    align-items: center; justify-content: center; gap: 8px;
-    background: #111; color: #333; font-size: 12px; letter-spacing: 0.12em; z-index: 99;
+  /* ── AR hint (shown only during AR session) ──────────────────────────────── */
+  #ar-hint {
+    display: none;
+    margin-top: 10px; padding: 6px 0;
+    border-top: 1px solid #2a2a2a;
+    font-size: 10px; color: #88aaff; text-align: center; letter-spacing: .06em;
   }
-  #loader .sub { font-size: 9px; color: #222; letter-spacing: 0.1em; }
+  body.ar-active #ar-hint { display: block; }
+
+  /* ── panel repositions to bottom-centre in AR (DOM overlay) ─────────────── */
+  body.ar-active #panel {
+    top: auto; bottom: 80px;
+    left: 50%; transform: translateX(-50%);
+    width: 290px;
+  }
+
+  /* ── compat note ─────────────────────────────────────────────────────────── */
+  #compat { margin-top: 10px; font-size: 8px; color: #252525; line-height: 1.7; }
+
+  /* ── AR entry button (Three.js ARButton appends this) ────────────────────── */
+  #ARButton {
+    position: fixed !important;
+    bottom: 20px !important; left: 50% !important;
+    transform: translateX(-50%) !important;
+  }
 </style>
 </head>
 <body>
 
 <div id="loader">
   <span>LOADING</span>
-  <span class="sub">python3 -m http.server</span>
+  <span class="sub">python3 serve_https.py  ·  then open https://localhost:8443</span>
 </div>
 
 <div id="panel" style="display:none">
@@ -66,7 +80,7 @@
   <div class="row">
     <button id="btn-play">&#9654; Play</button>
     <button id="btn-reset">&#8617; Reset</button>
-    <select id="speed-sel" title="Playback speed">
+    <select id="speed-sel">
       <option value="6">&#189;&#215;</option>
       <option value="12" selected>1&#215;</option>
       <option value="24">2&#215;</option>
@@ -74,7 +88,13 @@
     </select>
   </div>
 
+  <div id="ar-hint">&#9679; Point camera at a flat surface</div>
   <div id="info"></div>
+
+  <div id="compat">
+    AR: iOS 16+ Safari &nbsp;·&nbsp; Android Chrome 81+
+    &nbsp;·&nbsp; Desktop: standard 3D viewer
+  </div>
 </div>
 
 <script type="importmap">
@@ -87,37 +107,58 @@
 </script>
 
 <script type="module">
-import * as THREE        from 'three';
-import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import * as THREE           from 'three';
+import { OrbitControls }    from 'three/addons/controls/OrbitControls.js';
+import { ARButton }         from 'three/addons/webxr/ARButton.js';
+import { XREstimatedLight } from 'three/addons/webxr/XREstimatedLight.js';
+
+// ── constants ─────────────────────────────────────────────────────────────────
+// Adenylate kinase CA trace spans ~80 Å.  Scale so it appears 10 cm in AR.
+const AR_SCALE     = 0.1 / 80;     // ~0.00125  (Three.js units = Å, XR units = m)
+const AR_MAX_ATOMS = 214;           // performance cap for 60 fps on mobile
+const DIST2_BREAK  = 4.5 * 4.5;    // Å² — max Cα–Cα distance before chain break
 
 // ── renderer ──────────────────────────────────────────────────────────────────
-const renderer = new THREE.WebGLRenderer({ antialias: true });
+const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
 renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
 renderer.setSize(innerWidth, innerHeight);
+renderer.xr.enabled = true;
 document.body.appendChild(renderer.domElement);
 
-// ── scene ─────────────────────────────────────────────────────────────────────
-const scene = new THREE.Scene();
+// ── scene + camera + controls ─────────────────────────────────────────────────
+const scene  = new THREE.Scene();
 scene.background = new THREE.Color(0x111111);
 
-// ── camera ────────────────────────────────────────────────────────────────────
-const camera = new THREE.PerspectiveCamera(60, innerWidth / innerHeight, 0.1, 2000);
+const camera = new THREE.PerspectiveCamera(60, innerWidth / innerHeight, 0.01, 2000);
 camera.position.set(0, 0, 120);
 
-// ── controls ──────────────────────────────────────────────────────────────────
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
 controls.dampingFactor = 0.08;
 
-// ── lighting ──────────────────────────────────────────────────────────────────
-scene.add(new THREE.AmbientLight(0xffffff, 0.5));
-const sun = new THREE.DirectionalLight(0xffffff, 1.0);
-sun.position.set(1, 2, 3);
-scene.add(sun);
+// ── desktop lighting ──────────────────────────────────────────────────────────
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+const sunLight     = new THREE.DirectionalLight(0xffffff, 1.0);
+sunLight.position.set(1, 2, 3);
+scene.add(ambientLight, sunLight);
 
-// ── shared geometry / materials ───────────────────────────────────────────────
+// ── protein group — all protein objects live here for AR placement/scaling ────
+const proteinGroup = new THREE.Group();
+scene.add(proteinGroup);
+
+// ── reticle — ring shown on detected surface before placement ─────────────────
+const reticle = new THREE.Mesh(
+  new THREE.RingGeometry(0.07, 0.09, 32).rotateX(-Math.PI / 2),
+  new THREE.MeshBasicMaterial({ color: 0x88aaff, transparent: true, opacity: 0.85, side: THREE.DoubleSide })
+);
+reticle.matrixAutoUpdate = false;
+reticle.visible = false;
+scene.add(reticle);
+
+// ── shared geometry + materials ───────────────────────────────────────────────
 const SPHERE_GEO = new THREE.SphereGeometry(0.3, 8, 6);
-const SPHERE_MAT = new THREE.MeshPhongMaterial();
+const MAT_PHONG  = new THREE.MeshPhongMaterial();          // desktop: lit
+const MAT_BASIC  = new THREE.MeshBasicMaterial();          // AR: no lighting calc
 const LINE_MAT   = new THREE.LineBasicMaterial({ vertexColors: true });
 
 function rainbowColor(i, n) {
@@ -128,46 +169,73 @@ function rainbowColor(i, n) {
 let sphereMesh = null;
 let backbone   = null;
 let currentT   = null;
-let segA       = [];   // residue index of segment start
-let segB       = [];   // residue index of segment end
+let segA       = [];   // LOCAL index of segment start
+let segB       = [];   // LOCAL index of segment end
+let _srcIdx    = [];   // LOCAL index → original frame index
 
 const _dummy = new THREE.Object3D();
 
 function clearScene() {
-  if (sphereMesh) { scene.remove(sphereMesh); sphereMesh = null; }
-  if (backbone)   { scene.remove(backbone); backbone.geometry.dispose(); backbone = null; }
-  segA = []; segB = [];
+  if (sphereMesh) { proteinGroup.remove(sphereMesh); sphereMesh = null; }
+  if (backbone)   { proteinGroup.remove(backbone); backbone.geometry.dispose(); backbone = null; }
+  segA = []; segB = []; _srcIdx = [];
 }
 
 function buildScene(t) {
   clearScene();
   currentT = t;
-  const N  = t.n_residues;
-  const f0 = t.frames[0];
+  const Nfull = t.n_residues;
+  const f0    = t.frames[0];
 
-  // rainbow colours by residue index (constant across frames)
-  const colors = Array.from({ length: N }, (_, i) => rainbowColor(i, N));
-
-  // ── instanced CA spheres ─────────────────────────────────────────────────
-  const iColor = new THREE.InstancedBufferAttribute(new Float32Array(N * 3), 3);
-  colors.forEach((c, i) => iColor.setXYZ(i, c.r, c.g, c.b));
-  sphereMesh = new THREE.InstancedMesh(SPHERE_GEO, SPHERE_MAT, N);
-  sphereMesh.instanceColor = iColor;
-  sphereMesh.instanceColor.needsUpdate = true;
-  scene.add(sphereMesh);
-
-  // ── backbone segment pairs ────────────────────────────────────────────────
-  const DIST2 = 4.5 * 4.5;
-  for (let i = 1; i < N; i++) {
-    if (t.res_seq[i] - t.res_seq[i - 1] !== 1) continue;
+  // Precompute backbone break positions from frame 0 geometry + sequence gaps
+  const breaks = new Set();
+  for (let i = 1; i < Nfull; i++) {
+    if (t.res_seq[i] - t.res_seq[i - 1] !== 1) { breaks.add(i); continue; }
     const a = f0[i - 1], b = f0[i];
     const dx = b[0]-a[0], dy = b[1]-a[1], dz = b[2]-a[2];
-    if (dx*dx + dy*dy + dz*dz > DIST2) continue;
-    segA.push(i - 1);
-    segB.push(i);
+    if (dx*dx + dy*dy + dz*dz > DIST2_BREAK) breaks.add(i);
   }
-  const nSegs = segA.length;
 
+  // Atom indices to render: subsample evenly if in AR and too many atoms
+  const subsample = arMode && Nfull > AR_MAX_ATOMS;
+  _srcIdx = subsample
+    ? Array.from({ length: AR_MAX_ATOMS }, (_, k) =>
+        Math.round(k * (Nfull - 1) / (AR_MAX_ATOMS - 1)))
+    : Array.from({ length: Nfull }, (_, i) => i);
+  const N = _srcIdx.length;
+
+  // Rainbow colours by local index (N-term → C-term gradient)
+  const colors = _srcIdx.map((_, k) => rainbowColor(k, N));
+
+  // ── instanced CA spheres ─────────────────────────────────────────────────
+  const mat    = arMode ? MAT_BASIC : MAT_PHONG;
+  const iColor = new THREE.InstancedBufferAttribute(new Float32Array(N * 3), 3);
+  colors.forEach((c, k) => iColor.setXYZ(k, c.r, c.g, c.b));
+  sphereMesh = new THREE.InstancedMesh(SPHERE_GEO, mat, N);
+  sphereMesh.instanceColor = iColor;
+  sphereMesh.instanceColor.needsUpdate = true;
+  proteinGroup.add(sphereMesh);
+
+  // ── backbone segment pairs ────────────────────────────────────────────────
+  segA = []; segB = [];
+  if (!subsample) {
+    // Full resolution: consecutive original pairs skipping breaks
+    for (let i = 1; i < Nfull; i++) {
+      if (!breaks.has(i)) { segA.push(i - 1); segB.push(i); }
+    }
+  } else {
+    // Subsampled: connect consecutive local pairs, skip if any break lies between
+    for (let k = 1; k < N; k++) {
+      const origA = _srcIdx[k - 1], origB = _srcIdx[k];
+      let hasBrk = false;
+      for (let m = origA + 1; m <= origB; m++) {
+        if (breaks.has(m)) { hasBrk = true; break; }
+      }
+      if (!hasBrk) { segA.push(k - 1); segB.push(k); }
+    }
+  }
+
+  const nSegs  = segA.length;
   const posArr = new Float32Array(nSegs * 6);
   const colArr = new Float32Array(nSegs * 6);
   for (let s = 0; s < nSegs; s++) {
@@ -179,23 +247,25 @@ function buildScene(t) {
   geo.setAttribute('position', new THREE.BufferAttribute(posArr, 3));
   geo.setAttribute('color',    new THREE.BufferAttribute(colArr, 3));
   backbone = new THREE.LineSegments(geo, LINE_MAT);
-  scene.add(backbone);
+  proteinGroup.add(backbone);
 }
 
 function displayFrame(idx) {
+  if (!currentT || !sphereMesh) return;
   const frame = currentT.frames[idx];
+  const N     = _srcIdx.length;
   const nSegs = segA.length;
 
-  for (let i = 0; i < frame.length; i++) {
-    _dummy.position.fromArray(frame[i]);
+  for (let k = 0; k < N; k++) {
+    _dummy.position.fromArray(frame[_srcIdx[k]]);
     _dummy.updateMatrix();
-    sphereMesh.setMatrixAt(i, _dummy.matrix);
+    sphereMesh.setMatrixAt(k, _dummy.matrix);
   }
   sphereMesh.instanceMatrix.needsUpdate = true;
 
   const pos = backbone.geometry.attributes.position.array;
   for (let s = 0; s < nSegs; s++) {
-    const a = frame[segA[s]], b = frame[segB[s]];
+    const a = frame[_srcIdx[segA[s]]], b = frame[_srcIdx[segB[s]]];
     pos[s*6]   = a[0]; pos[s*6+1] = a[1]; pos[s*6+2] = a[2];
     pos[s*6+3] = b[0]; pos[s*6+4] = b[1]; pos[s*6+5] = b[2];
   }
@@ -207,13 +277,151 @@ function fitCamera(frame) {
   frame.forEach(p => box.expandByPoint(new THREE.Vector3(p[0], p[1], p[2])));
   const centre = box.getCenter(new THREE.Vector3());
   const size   = box.getSize(new THREE.Vector3());
-  const maxDim = Math.max(size.x, size.y, size.z);
-  const dist   = (maxDim / 2) / Math.tan(camera.fov * Math.PI / 360) * 1.3;
+  const dist   = (Math.max(size.x, size.y, size.z) / 2) / Math.tan(camera.fov * Math.PI / 360) * 1.3;
   controls.target.copy(centre);
-  camera.position.copy(centre).addScaledVector(
-    new THREE.Vector3(0.3, 0.3, 1).normalize(), dist
-  );
+  camera.position.copy(centre).addScaledVector(new THREE.Vector3(0.3, 0.3, 1).normalize(), dist);
   controls.update();
+}
+
+// ── WebXR AR ──────────────────────────────────────────────────────────────────
+let arMode         = false;
+let arPlaced       = false;
+let hitTestSource  = null;
+let xrLight        = null;
+let arProteinScale = AR_SCALE;
+
+renderer.xr.addEventListener('sessionstart', async () => {
+  arMode         = true;
+  arPlaced       = false;
+  arProteinScale = AR_SCALE;
+  controls.enabled   = false;
+  scene.background   = null;            // transparent — show camera feed
+
+  proteinGroup.scale.setScalar(arProteinScale);
+  proteinGroup.position.set(0, 0, 0);
+  proteinGroup.rotation.set(0, 0, 0);
+  proteinGroup.visible = false;         // hidden until placed
+  document.body.classList.add('ar-active');
+  setHint('&#9679; Point camera at a flat surface and tap to place');
+
+  // Hit test source
+  if (hitTestSource) { hitTestSource.cancel(); hitTestSource = null; }
+  try {
+    const session   = renderer.xr.getSession();
+    const viewerRef = await session.requestReferenceSpace('viewer');
+    hitTestSource   = await session.requestHitTestSource({ space: viewerRef });
+  } catch (e) { console.warn('Hit test not available:', e.message); }
+
+  // XR light estimation (optional — falls back to desktop lights if unavailable)
+  try {
+    xrLight = new XREstimatedLight(renderer);
+    xrLight.addEventListener('estimationstart', () => {
+      scene.add(xrLight);
+      ambientLight.visible = false;
+      sunLight.visible     = false;
+    });
+    xrLight.addEventListener('estimationend', () => {
+      scene.remove(xrLight);
+      ambientLight.visible = true;
+      sunLight.visible     = true;
+    });
+  } catch (e) {}
+
+  renderer.xr.getSession().addEventListener('select', onARSelect);
+
+  // Rebuild with AR subsampling + MeshBasicMaterial
+  if (currentT) buildScene(currentT);
+});
+
+renderer.xr.addEventListener('sessionend', () => {
+  if (hitTestSource) { hitTestSource.cancel(); hitTestSource = null; }
+  if (xrLight)       { scene.remove(xrLight); xrLight = null; }
+  arMode             = false;
+  arPlaced           = false;
+  reticle.visible    = false;
+  ambientLight.visible = true;
+  sunLight.visible     = true;
+  controls.enabled     = true;
+  scene.background     = new THREE.Color(0x111111);
+  proteinGroup.scale.setScalar(1);
+  proteinGroup.position.set(0, 0, 0);
+  proteinGroup.rotation.set(0, 0, 0);
+  proteinGroup.visible = true;
+  document.body.classList.remove('ar-active');
+  setHint('');
+  // Rebuild at full quality with Phong material
+  if (currentT) buildScene(currentT);
+});
+
+// First tap: place protein on detected surface
+// Subsequent taps: toggle play/pause
+function onARSelect() {
+  if (!arPlaced) {
+    if (!reticle.visible) return;
+    // Position group at surface with slight upward offset so protein sits on top
+    const pos = new THREE.Vector3().setFromMatrixPosition(reticle.matrix);
+    pos.y += 40 * arProteinScale;    // lift ~40 Å (half-height) above surface
+    proteinGroup.position.copy(pos);
+    proteinGroup.visible = true;
+    arPlaced             = true;
+    reticle.visible      = false;
+    setHint('Pinch: scale &nbsp;·&nbsp; Two-finger: rotate &nbsp;·&nbsp; Tap: play/pause');
+    if (currentT) { setFrame(0); }
+  } else {
+    togglePlay();
+  }
+}
+
+function setHint(html) {
+  document.getElementById('ar-hint').innerHTML = html;
+}
+
+// ── Pinch-to-scale + two-finger rotate via touch events ───────────────────────
+// These fire on both the canvas and any DOM overlay elements
+let _t0 = null, _t1 = null, _lastPinchDist = null, _lastPinchAngle = null;
+
+function touchStart(e) {
+  if (e.touches[0]) _t0 = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+  if (e.touches[1]) _t1 = { x: e.touches[1].clientX, y: e.touches[1].clientY };
+  if (e.touches.length < 2) { _lastPinchDist = null; _lastPinchAngle = null; }
+}
+function touchMove(e) {
+  if (!arMode || !arPlaced || e.touches.length < 2) return;
+  _t0 = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+  _t1 = { x: e.touches[1].clientX, y: e.touches[1].clientY };
+  const dx    = _t1.x - _t0.x, dy = _t1.y - _t0.y;
+  const dist  = Math.hypot(dx, dy);
+  const angle = Math.atan2(dy, dx);
+  if (_lastPinchDist !== null) {
+    arProteinScale = Math.max(2e-4, Math.min(8e-3, arProteinScale * dist / _lastPinchDist));
+    proteinGroup.scale.setScalar(arProteinScale);
+  }
+  if (_lastPinchAngle !== null) {
+    proteinGroup.rotation.y += angle - _lastPinchAngle;
+  }
+  _lastPinchDist  = dist;
+  _lastPinchAngle = angle;
+}
+function touchEnd(e) {
+  if (e.touches.length < 2) { _t1 = null; _lastPinchDist = null; _lastPinchAngle = null; }
+  if (e.touches.length < 1)   _t0 = null;
+}
+document.addEventListener('touchstart', touchStart, { passive: true });
+document.addEventListener('touchmove',  touchMove,  { passive: true });
+document.addEventListener('touchend',   touchEnd,   { passive: true });
+
+// ── AR button — appended only when immersive-ar is supported ──────────────────
+if ('xr' in navigator) {
+  navigator.xr.isSessionSupported('immersive-ar').then(supported => {
+    if (!supported) return;
+    const btn = ARButton.createButton(renderer, {
+      requiredFeatures: ['hit-test'],
+      optionalFeatures: ['dom-overlay', 'light-estimation'],
+      domOverlay:       { root: document.body },
+    });
+    btn.id = 'ARButton';
+    document.body.appendChild(btn);
+  }).catch(() => {});
 }
 
 // ── playback ──────────────────────────────────────────────────────────────────
@@ -231,27 +439,60 @@ function setFrame(idx) {
     `${currentFrame} / ${currentT.frames.length - 1}`;
 }
 
-// ── render loop ───────────────────────────────────────────────────────────────
-function animate(ts) {
-  requestAnimationFrame(animate);
+function togglePlay() {
+  isPlaying = !isPlaying;
+  document.getElementById('btn-play').textContent = isPlaying ? '⏸ Pause' : '▶ Play';
+  lastTs = 0;
+}
+
+// ── render loop (setAnimationLoop required for WebXR) ─────────────────────────
+renderer.setAnimationLoop(function (ts, frame) {
+  // Update reticle from hit test in AR pre-placement phase
+  if (frame && hitTestSource && !arPlaced) {
+    const ref  = renderer.xr.getReferenceSpace();
+    const hits = frame.getHitTestResults(hitTestSource);
+    if (hits.length > 0) {
+      reticle.visible = true;
+      reticle.matrix.fromArray(hits[0].getPose(ref).transform.matrix);
+    } else {
+      reticle.visible = false;
+    }
+  }
+
+  // Playback advance
   if (isPlaying && currentT) {
     if (ts - lastTs >= 1000 / fps()) {
       setFrame((currentFrame + 1) % currentT.frames.length);
       lastTs = ts;
     }
   }
-  controls.update();
+
+  if (!frame) controls.update();   // orbit controls only in non-XR mode
   renderer.render(scene, camera);
-}
+});
+
+// ── UI wiring ─────────────────────────────────────────────────────────────────
+document.getElementById('slider').addEventListener('input', e => {
+  if (isPlaying) togglePlay();
+  setFrame(parseInt(e.target.value));
+});
+document.getElementById('btn-play').addEventListener('click', togglePlay);
+document.getElementById('btn-reset').addEventListener('click', () => {
+  if (isPlaying) togglePlay();
+  setFrame(0);
+});
+window.addEventListener('resize', () => {
+  camera.aspect = innerWidth / innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth, innerHeight);
+});
 
 // ── data loading ──────────────────────────────────────────────────────────────
 const _cache = {};
-
 async function loadTransition(meta) {
   let t = _cache[meta.id];
   if (!t) {
-    document.getElementById('info').innerHTML =
-      `<span class="hi">Loading ${meta.id}…</span>`;
+    document.getElementById('info').textContent = `Loading ${meta.id}…`;
     const r = await fetch(`transitions/${meta.id}.json`);
     if (!r.ok) throw new Error(`HTTP ${r.status}`);
     t = await r.json();
@@ -259,38 +500,14 @@ async function loadTransition(meta) {
   }
   buildScene(t);
   setFrame(0);
-  fitCamera(t.frames[0]);
+  if (!arMode) fitCamera(t.frames[0]);
   document.getElementById('slider').max = t.frames.length - 1;
   document.getElementById('info').innerHTML =
     `<span class="hi">C${t.from_cluster} → C${t.to_cluster}</span><br>` +
     `From: ${t.from_members.join(', ')}<br>` +
-    `To:   ${t.to_members.join(', ')}<br>` +
-    `${t.n_residues} Cα &nbsp;·&nbsp; res ${t.res_seq[0]}–${t.res_seq.at(-1)}`;
+    `To:&nbsp;&nbsp; ${t.to_members.join(', ')}<br>` +
+    `${t.n_residues} C&alpha; &nbsp;·&nbsp; res ${t.res_seq[0]}–${t.res_seq.at(-1)}`;
 }
-
-// ── UI wiring ─────────────────────────────────────────────────────────────────
-document.getElementById('slider').addEventListener('input', e => {
-  if (isPlaying) { isPlaying = false; document.getElementById('btn-play').textContent = '▶ Play'; }
-  setFrame(parseInt(e.target.value));
-});
-
-document.getElementById('btn-play').addEventListener('click', () => {
-  isPlaying = !isPlaying;
-  document.getElementById('btn-play').textContent = isPlaying ? '⏸ Pause' : '▶ Play';
-  lastTs = 0;
-});
-
-document.getElementById('btn-reset').addEventListener('click', () => {
-  isPlaying = false;
-  document.getElementById('btn-play').textContent = '▶ Play';
-  setFrame(0);
-});
-
-window.addEventListener('resize', () => {
-  camera.aspect = innerWidth / innerHeight;
-  camera.updateProjectionMatrix();
-  renderer.setSize(innerWidth, innerHeight);
-});
 
 // ── bootstrap ─────────────────────────────────────────────────────────────────
 (async () => {
@@ -301,26 +518,23 @@ window.addEventListener('resize', () => {
 
     const sel = document.getElementById('sel-transition');
     index.transitions.forEach((t, i) => {
-      const opt  = document.createElement('option');
-      opt.value  = i;
-      opt.text   = `C${t.from_cluster}→C${t.to_cluster}  [${t.from_members.join('+')}]→[${t.to_members.join('+')}]  (${t.n_residues} Cα)`;
+      const opt = document.createElement('option');
+      opt.value = i;
+      opt.text  = `C${t.from_cluster}→C${t.to_cluster}  [${t.from_members.join('+')}]→[${t.to_members.join('+')}]  (${t.n_residues} Cα)`;
       sel.appendChild(opt);
     });
-
     sel.addEventListener('change', e =>
       loadTransition(index.transitions[parseInt(e.target.value)])
     );
 
     document.getElementById('loader').style.display = 'none';
     document.getElementById('panel').style.display  = 'block';
-    requestAnimationFrame(animate);
-    loadTransition(index.transitions[0]);
+    await loadTransition(index.transitions[0]);
 
   } catch (err) {
-    const el = document.getElementById('loader');
-    el.innerHTML =
+    document.getElementById('loader').innerHTML =
       `<span style="color:#662222">Failed: ${err.message}</span>` +
-      `<span class="sub">Run:  python3 -m http.server  then open  http://localhost:8000</span>`;
+      `<span class="sub">Serve HTTPS:  python3 serve_https.py</span>`;
   }
 })();
 </script>
