@@ -2,541 +2,287 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Protein Transition Viewer</title>
+<title>Adenylate Kinase Viewer</title>
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-  body {
-    background: #07090f;
-    overflow: hidden;
-    font-family: 'Courier New', Courier, monospace;
-    color: #8899bb;
-  }
-
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #111; overflow: hidden; font-family: monospace; color: #ccc; }
   canvas { display: block; }
 
-  /* ── control panel ───────────────────────────────────────────────────── */
   #panel {
-    position: absolute;
-    top: 16px; left: 16px;
-    z-index: 10;
-    width: 340px;
-    background: rgba(6, 9, 22, 0.88);
-    border: 1px solid rgba(80, 110, 220, 0.28);
-    border-radius: 10px;
-    padding: 16px 18px;
-    backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
-    box-shadow: 0 4px 32px rgba(0,0,60,0.6);
-    user-select: none;
+    position: absolute; top: 16px; left: 16px; z-index: 10;
+    width: 310px;
+    background: rgba(0,0,0,0.72);
+    border: 1px solid #2a2a2a;
+    border-radius: 6px;
+    padding: 14px;
   }
-
-  #panel h1 {
-    font-size: 11px;
-    letter-spacing: 0.18em;
-    color: #5577dd;
-    text-transform: uppercase;
-    margin-bottom: 14px;
-    padding-bottom: 10px;
-    border-bottom: 1px solid rgba(80,110,220,0.2);
-  }
-
-  .field-label {
-    font-size: 9px;
-    letter-spacing: 0.12em;
-    color: #445577;
-    text-transform: uppercase;
-    margin-top: 12px;
-    margin-bottom: 5px;
-  }
-
+  #panel h1 { font-size: 10px; letter-spacing: 0.18em; color: #555; text-transform: uppercase; margin-bottom: 12px; }
+  .lbl { font-size: 9px; letter-spacing: 0.12em; color: #444; text-transform: uppercase; margin-top: 10px; margin-bottom: 4px; display: flex; justify-content: space-between; }
   select {
-    width: 100%;
-    background: rgba(3, 5, 15, 0.9);
-    color: #aabbdd;
-    border: 1px solid rgba(80,110,220,0.3);
-    border-radius: 5px;
-    padding: 6px 8px;
-    font-size: 11px;
-    font-family: inherit;
-    cursor: pointer;
-    outline: none;
+    width: 100%; background: #1a1a1a; color: #bbb;
+    border: 1px solid #2e2e2e; border-radius: 3px;
+    padding: 5px 6px; font-family: monospace; font-size: 10px; cursor: pointer;
   }
-  select:hover { border-color: rgba(100,140,255,0.55); }
-  select option { background: #0a0e1e; }
-
-  .row { display: flex; align-items: center; gap: 8px; }
-
-  input[type="range"] {
-    flex: 1;
-    -webkit-appearance: none;
-    height: 3px;
-    border-radius: 2px;
-    background: rgba(80,110,220,0.25);
-    outline: none;
-    cursor: pointer;
+  select option { background: #111; }
+  input[type=range] {
+    width: 100%; accent-color: #3366cc; cursor: pointer;
+    height: 3px; margin-top: 2px;
   }
-  input[type="range"]::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    width: 13px; height: 13px;
-    border-radius: 50%;
-    background: #4466ff;
-    border: 2px solid #99aaff;
-    cursor: pointer;
-  }
-  input[type="range"]::-moz-range-thumb {
-    width: 13px; height: 13px;
-    border-radius: 50%;
-    background: #4466ff;
-    border: 2px solid #99aaff;
-    cursor: pointer;
-  }
-
-  #frame-display {
-    font-size: 11px;
-    color: #4466cc;
-    min-width: 42px;
-    text-align: right;
-    flex-shrink: 0;
-  }
-
-  .btn-row { display: flex; gap: 8px; margin-top: 14px; }
-
+  .row { display: flex; gap: 6px; margin-top: 10px; }
   button {
-    flex: 1;
-    background: rgba(30, 45, 110, 0.6);
-    color: #7799ee;
-    border: 1px solid rgba(80,110,220,0.4);
-    border-radius: 5px;
-    padding: 7px 6px;
-    font-size: 11px;
-    font-family: inherit;
-    cursor: pointer;
-    transition: background 0.15s, color 0.15s;
-    letter-spacing: 0.05em;
+    flex: 1; background: #1a1a1a; color: #999;
+    border: 1px solid #2e2e2e; border-radius: 3px;
+    padding: 6px 4px; font-family: monospace; font-size: 10px; cursor: pointer;
   }
-  button:hover { background: rgba(50, 75, 180, 0.75); color: #bbccff; }
-  button:active { background: rgba(60, 90, 200, 0.85); }
+  button:hover { background: #222; color: #ccc; }
+  #speed-sel { flex: 0 0 auto; width: auto; }
+  #info { margin-top: 12px; font-size: 9px; color: #3a3a3a; line-height: 1.7; }
+  #info .hi { color: #555; }
 
-  #speed-select {
-    flex: 0 0 auto;
-    width: auto;
-    padding: 7px 8px;
-    font-size: 11px;
-  }
-
-  /* ── info box ───────────────────────────────────────────────────────── */
-  #info {
-    margin-top: 14px;
-    padding-top: 12px;
-    border-top: 1px solid rgba(80,110,220,0.18);
-    font-size: 10px;
-    line-height: 1.75;
-    color: #445577;
-  }
-  #info .hi { color: #6688bb; }
-
-  /* ── colour legend ──────────────────────────────────────────────────── */
-  .legend {
-    margin-top: 14px;
-    padding-top: 12px;
-    border-top: 1px solid rgba(80,110,220,0.18);
-  }
-  .legend-bar {
-    height: 7px;
-    border-radius: 4px;
-    margin: 6px 0 4px;
-    background: linear-gradient(to right,
-      hsl(0,85%,62%), hsl(54,85%,62%), hsl(108,85%,62%),
-      hsl(162,85%,62%), hsl(216,85%,62%), hsl(270,85%,62%));
-  }
-  .legend-labels {
-    display: flex;
-    justify-content: space-between;
-    font-size: 9px;
-    color: #334466;
-    letter-spacing: 0.08em;
-  }
-
-  /* ── loading overlay ────────────────────────────────────────────────── */
   #loader {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    background: #07090f;
-    color: #445599;
-    font-size: 13px;
-    letter-spacing: 0.14em;
-    z-index: 99;
-    gap: 10px;
+    position: absolute; inset: 0; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 8px;
+    background: #111; color: #333; font-size: 12px; letter-spacing: 0.12em; z-index: 99;
   }
-  #loader .sub { font-size: 10px; color: #2d3a5a; letter-spacing: 0.1em; }
+  #loader .sub { font-size: 9px; color: #222; letter-spacing: 0.1em; }
 </style>
 </head>
 <body>
 
-<!-- ── loading screen ──────────────────────────────────────────────────── -->
 <div id="loader">
-  <span>LOADING TRANSITIONS.JSON</span>
-  <span class="sub">serve with:  python3 -m http.server</span>
+  <span>LOADING</span>
+  <span class="sub">python3 -m http.server</span>
 </div>
 
-<!-- ── control panel ───────────────────────────────────────────────────── -->
 <div id="panel" style="display:none">
-  <h1>Protein Transition Viewer</h1>
+  <h1>Adenylate Kinase</h1>
 
-  <div class="field-label">Transition</div>
-  <select id="transition-select"></select>
+  <div class="lbl">Transition</div>
+  <select id="sel-transition"></select>
 
-  <div class="field-label">Frame</div>
+  <div class="lbl">Frame <span id="frame-num">0 / 59</span></div>
+  <input type="range" id="slider" min="0" max="59" value="0">
+
   <div class="row">
-    <input type="range" id="frame-slider" min="0" max="59" value="0" step="1">
-    <span id="frame-display">0 / 59</span>
-  </div>
-
-  <div class="btn-row">
-    <button id="play-btn">▶ Play</button>
-    <button id="reset-btn">↩ Reset</button>
-    <select id="speed-select" class="button" title="Playback speed">
-      <option value="6">½×</option>
-      <option value="12" selected>1×</option>
-      <option value="24">2×</option>
-      <option value="48">4×</option>
+    <button id="btn-play">&#9654; Play</button>
+    <button id="btn-reset">&#8617; Reset</button>
+    <select id="speed-sel" title="Playback speed">
+      <option value="6">&#189;&#215;</option>
+      <option value="12" selected>1&#215;</option>
+      <option value="24">2&#215;</option>
+      <option value="48">4&#215;</option>
     </select>
   </div>
 
   <div id="info"></div>
-
-  <div class="legend">
-    <div class="field-label" style="margin-top:0">Cα colour — residue position</div>
-    <div class="legend-bar"></div>
-    <div class="legend-labels"><span>N-term</span><span>C-term</span></div>
-  </div>
 </div>
 
-<!-- ── importmap + Three.js ────────────────────────────────────────────── -->
 <script type="importmap">
 {
   "imports": {
-    "three":          "https://cdn.jsdelivr.net/npm/three@0.165.0/build/three.module.js",
-    "three/addons/":  "https://cdn.jsdelivr.net/npm/three@0.165.0/examples/jsm/"
+    "three":         "https://cdn.jsdelivr.net/npm/three@0.165.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.165.0/examples/jsm/"
   }
 }
 </script>
 
 <script type="module">
-import * as THREE                from 'three';
-import { OrbitControls }        from 'three/addons/controls/OrbitControls.js';
-import { Line2 }                from 'three/addons/lines/Line2.js';
-import { LineGeometry }         from 'three/addons/lines/LineGeometry.js';
-import { LineMaterial }         from 'three/addons/lines/LineMaterial.js';
+import * as THREE        from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
-// ── scene setup ─────────────────────────────────────────────────────────────
-const scene    = new THREE.Scene();
-scene.background = new THREE.Color(0x07090f);
-scene.fog        = new THREE.FogExp2(0x07090f, 0.012);
-
-const camera = new THREE.PerspectiveCamera(45, innerWidth / innerHeight, 1, 800);
-camera.position.set(0, 0, 140);
-
-const renderer = new THREE.WebGLRenderer({ antialias: true, depth: true });
+// ── renderer ──────────────────────────────────────────────────────────────────
+const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
 renderer.setSize(innerWidth, innerHeight);
 document.body.appendChild(renderer.domElement);
 
+// ── scene ─────────────────────────────────────────────────────────────────────
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x111111);
+
+// ── camera ────────────────────────────────────────────────────────────────────
+const camera = new THREE.PerspectiveCamera(60, innerWidth / innerHeight, 0.1, 2000);
+camera.position.set(0, 0, 120);
+
+// ── controls ──────────────────────────────────────────────────────────────────
 const controls = new OrbitControls(camera, renderer.domElement);
-controls.enableDamping  = true;
-controls.dampingFactor  = 0.06;
-controls.minDistance    = 10;
-controls.maxDistance    = 800;
+controls.enableDamping = true;
+controls.dampingFactor = 0.08;
 
-// lighting
-scene.add(new THREE.AmbientLight(0xffffff, 0.85));
-
-const sun = new THREE.DirectionalLight(0xffffff, 1.4);
-sun.position.set(1, 1, 1);
+// ── lighting ──────────────────────────────────────────────────────────────────
+scene.add(new THREE.AmbientLight(0xffffff, 0.5));
+const sun = new THREE.DirectionalLight(0xffffff, 1.0);
+sun.position.set(1, 2, 3);
 scene.add(sun);
 
-const fill = new THREE.DirectionalLight(0xffffff, 0.5);
-fill.position.set(-1, 0.5, -0.5);
-scene.add(fill);
+// ── shared geometry / materials ───────────────────────────────────────────────
+const SPHERE_GEO = new THREE.SphereGeometry(0.3, 8, 6);
+const SPHERE_MAT = new THREE.MeshPhongMaterial();
+const LINE_MAT   = new THREE.LineBasicMaterial({ vertexColors: true });
 
-const rim = new THREE.DirectionalLight(0xffeedd, 0.3);
-rim.position.set(0, -5, 2);
-scene.add(rim);
-
-// ── geometry helpers ─────────────────────────────────────────────────────────
-
-// global residue-seq colour range (computed after data loads)
-let gMinRes = 0, gMaxRes = 300;
-
-function resColor(resSeq) {
-  const t = Math.max(0, Math.min(1, (resSeq - gMinRes) / (gMaxRes - gMinRes)));
-  return new THREE.Color().setHSL(t * 0.75, 0.88, 0.62);
+function rainbowColor(i, n) {
+  return new THREE.Color().setHSL((i / Math.max(n - 1, 1)) * 0.75, 1.0, 0.55);
 }
 
-// shared sphere geometry (reused across all transitions)
-const SPHERE_GEO = new THREE.SphereGeometry(0.9, 10, 7);
-const SPHERE_MAT = new THREE.MeshPhongMaterial({ shininess: 55, specular: 0x333333 });
+// ── scene state ───────────────────────────────────────────────────────────────
+let sphereMesh = null;
+let backbone   = null;
+let currentT   = null;
+let segA       = [];   // residue index of segment start
+let segB       = [];   // residue index of segment end
 
-// break the backbone into segments at chain breaks:
-//   - residue sequence goes backward (chain reset) or jumps forward by > 1
-//   - OR 3D Cα–Cα distance > 4.5 Å (peptide bond ~3.8 Å, allow some slack)
-function buildSegments(resSeqArr, frame0) {
-  const DIST2_MAX = 4.5 * 4.5;  // 20.25 Å²
-  const segs = [];
-  let start = 0;
-  for (let i = 1; i < resSeqArr.length; i++) {
-    const resDiff = resSeqArr[i] - resSeqArr[i - 1];
-    let isBreak = resDiff !== 1;   // consecutive residues must differ by exactly 1
-    if (!isBreak) {
-      // even if seq is consecutive, reject if 3D distance is too large
-      const a = frame0[i - 1], b = frame0[i];
-      const dx = b[0]-a[0], dy = b[1]-a[1], dz = b[2]-a[2];
-      if (dx*dx + dy*dy + dz*dz > DIST2_MAX) isBreak = true;
-    }
-    if (isBreak) {
-      segs.push([start, i]);
-      start = i;
-    }
-  }
-  segs.push([start, resSeqArr.length]);
-  return segs;
-}
-
-// ── per-transition state ─────────────────────────────────────────────────────
-let sphereMesh         = null;   // InstancedMesh
-let backboneLines      = [];     // Line2[]
-let currentTransition  = null;
-let segmentMap         = [];     // [{start,end,geo}]
-let currentScales      = [];     // per-residue sphere scale (variance-driven)
-let baseColors         = [];     // per-residue THREE.Color for depth-contrast
-let currentInstanceColor = null; // live InstancedBufferAttribute
-
-function clearScene() {
-  if (sphereMesh) { scene.remove(sphereMesh); sphereMesh = null; }  // SPHERE_GEO is shared — don't dispose
-  backboneLines.forEach(l => { scene.remove(l); l.geometry.dispose(); l.material.dispose(); });
-  backboneLines = [];
-  segmentMap    = [];
-}
-
-function buildSceneForTransition(t) {
-  clearScene();
-  currentTransition = t;
-  const N    = t.n_residues;
-  const f0   = t.frames[0];
-  const segs = buildSegments(t.res_seq, f0);
-
-  // ── per-residue flexibility: endpoint displacement across the transition ──
-  const fN = t.frames[t.frames.length - 1];
-  const disp = f0.map((p, i) => {
-    const q = fN[i];
-    return Math.sqrt((p[0]-q[0])**2 + (p[1]-q[1])**2 + (p[2]-q[2])**2);
-  });
-  const maxDisp = Math.max(...disp, 0.001);
-  const normDisp = disp.map(v => v / maxDisp);
-
-  // sphere scale 0.7 (rigid) → 1.3 (flexible)
-  currentScales = normDisp.map(v => 0.7 + v * 0.6);
-
-  // per-residue colours — local range so each transition uses the full rainbow
-  const localMin = Math.min(...t.res_seq);
-  const localMax = Math.max(...t.res_seq);
-  const localRange = Math.max(localMax - localMin, 1);
-  const colArr = t.res_seq.map(rs => {
-    const tt = Math.max(0, Math.min(1, (rs - localMin) / localRange));
-    return new THREE.Color().setHSL(tt * 0.75, 0.88, 0.72);
-  });
-  baseColors   = colArr.map(c => c.clone());
-
-  // ── instanced CA spheres ────────────────────────────────────────────────
-  sphereMesh = new THREE.InstancedMesh(SPHERE_GEO, SPHERE_MAT, N);
-  const iColor = new THREE.InstancedBufferAttribute(new Float32Array(N * 3), 3);
-  colArr.forEach((c, i) => iColor.setXYZ(i, c.r, c.g, c.b));
-  sphereMesh.instanceColor             = iColor;
-  sphereMesh.instanceColor.needsUpdate = true;
-  currentInstanceColor                 = iColor;
-  scene.add(sphereMesh);
-
-  // ── Line2 backbone — per-segment linewidth driven by avg flexibility ────
-  segs.forEach(([s, e]) => {
-    if (e - s < 2) return;
-
-    const segAvg = normDisp.slice(s, e).reduce((a, b) => a + b, 0) / (e - s);
-    const lw     = 1.0 + segAvg * 3.0;   // 1 px (rigid) → 4 px (flexible)
-
-    const count = e - s;
-    const pos   = new Float32Array(count * 3);
-    const cols  = new Float32Array(count * 3);
-    colArr.slice(s, e).forEach((c, k) => {
-      cols[k * 3] = c.r; cols[k * 3 + 1] = c.g; cols[k * 3 + 2] = c.b;
-    });
-
-    const geo     = new LineGeometry();
-    geo.setPositions(pos);
-    geo.setColors(cols);
-
-    const lineMat = new LineMaterial({
-      vertexColors:    true,
-      linewidth:       lw,
-      resolution:      new THREE.Vector2(innerWidth, innerHeight),
-      alphaToCoverage: true,
-    });
-
-    const line = new Line2(geo, lineMat);
-    line.computeLineDistances();
-    scene.add(line);
-    backboneLines.push(line);
-    segmentMap.push({ start: s, end: e, geo });
-  });
-}
-
-// dummy Object3D reused for InstancedMesh matrix updates
 const _dummy = new THREE.Object3D();
 
-function displayFrame(frameIdx) {
-  const frame = currentTransition.frames[frameIdx];
-  const N     = frame.length;
-
-  // centroid of this frame (for depth contrast)
-  let cx = 0, cy = 0, cz = 0;
-  for (const p of frame) { cx += p[0]; cy += p[1]; cz += p[2]; }
-  cx /= N; cy /= N; cz /= N;
-  let maxDist = 0.001;
-  for (const p of frame) {
-    const d = Math.sqrt((p[0]-cx)**2 + (p[1]-cy)**2 + (p[2]-cz)**2);
-    if (d > maxDist) maxDist = d;
-  }
-
-  // update sphere positions + scale + depth-contrast colour
-  for (let i = 0; i < N; i++) {
-    const p = frame[i];
-    _dummy.position.fromArray(p);
-    _dummy.scale.setScalar(currentScales[i]);
-    _dummy.updateMatrix();
-    sphereMesh.setMatrixAt(i, _dummy.matrix);
-
-    // dim atoms at the periphery (max 15% at outer edge)
-    const dx = p[0]-cx, dy = p[1]-cy, dz = p[2]-cz;
-    const dim = 1.0 - Math.sqrt(dx*dx + dy*dy + dz*dz) / maxDist * 0.15;
-    const bc  = baseColors[i];
-    currentInstanceColor.setXYZ(i, bc.r * dim, bc.g * dim, bc.b * dim);
-  }
-  sphereMesh.instanceMatrix.needsUpdate = true;
-  sphereMesh.instanceColor.needsUpdate  = true;
-
-  // update Line2 segment positions
-  segmentMap.forEach(({ start, end, geo }) => {
-    const count = end - start;
-    const pos   = new Float32Array(count * 3);
-    for (let i = 0; i < count; i++) {
-      pos[i * 3]     = frame[start + i][0];
-      pos[i * 3 + 1] = frame[start + i][1];
-      pos[i * 3 + 2] = frame[start + i][2];
-    }
-    geo.setPositions(pos);
-  });
+function clearScene() {
+  if (sphereMesh) { scene.remove(sphereMesh); sphereMesh = null; }
+  if (backbone)   { scene.remove(backbone); backbone.geometry.dispose(); backbone = null; }
+  segA = []; segB = [];
 }
 
-function fitCameraToFrame(frame) {
+function buildScene(t) {
+  clearScene();
+  currentT = t;
+  const N  = t.n_residues;
+  const f0 = t.frames[0];
+
+  // rainbow colours by residue index (constant across frames)
+  const colors = Array.from({ length: N }, (_, i) => rainbowColor(i, N));
+
+  // ── instanced CA spheres ─────────────────────────────────────────────────
+  const iColor = new THREE.InstancedBufferAttribute(new Float32Array(N * 3), 3);
+  colors.forEach((c, i) => iColor.setXYZ(i, c.r, c.g, c.b));
+  sphereMesh = new THREE.InstancedMesh(SPHERE_GEO, SPHERE_MAT, N);
+  sphereMesh.instanceColor = iColor;
+  sphereMesh.instanceColor.needsUpdate = true;
+  scene.add(sphereMesh);
+
+  // ── backbone segment pairs ────────────────────────────────────────────────
+  const DIST2 = 4.5 * 4.5;
+  for (let i = 1; i < N; i++) {
+    if (t.res_seq[i] - t.res_seq[i - 1] !== 1) continue;
+    const a = f0[i - 1], b = f0[i];
+    const dx = b[0]-a[0], dy = b[1]-a[1], dz = b[2]-a[2];
+    if (dx*dx + dy*dy + dz*dz > DIST2) continue;
+    segA.push(i - 1);
+    segB.push(i);
+  }
+  const nSegs = segA.length;
+
+  const posArr = new Float32Array(nSegs * 6);
+  const colArr = new Float32Array(nSegs * 6);
+  for (let s = 0; s < nSegs; s++) {
+    const ca = colors[segA[s]], cb = colors[segB[s]];
+    colArr[s*6]   = ca.r; colArr[s*6+1] = ca.g; colArr[s*6+2] = ca.b;
+    colArr[s*6+3] = cb.r; colArr[s*6+4] = cb.g; colArr[s*6+5] = cb.b;
+  }
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.BufferAttribute(posArr, 3));
+  geo.setAttribute('color',    new THREE.BufferAttribute(colArr, 3));
+  backbone = new THREE.LineSegments(geo, LINE_MAT);
+  scene.add(backbone);
+}
+
+function displayFrame(idx) {
+  const frame = currentT.frames[idx];
+  const nSegs = segA.length;
+
+  for (let i = 0; i < frame.length; i++) {
+    _dummy.position.fromArray(frame[i]);
+    _dummy.updateMatrix();
+    sphereMesh.setMatrixAt(i, _dummy.matrix);
+  }
+  sphereMesh.instanceMatrix.needsUpdate = true;
+
+  const pos = backbone.geometry.attributes.position.array;
+  for (let s = 0; s < nSegs; s++) {
+    const a = frame[segA[s]], b = frame[segB[s]];
+    pos[s*6]   = a[0]; pos[s*6+1] = a[1]; pos[s*6+2] = a[2];
+    pos[s*6+3] = b[0]; pos[s*6+4] = b[1]; pos[s*6+5] = b[2];
+  }
+  backbone.geometry.attributes.position.needsUpdate = true;
+}
+
+function fitCamera(frame) {
   const box = new THREE.Box3();
   frame.forEach(p => box.expandByPoint(new THREE.Vector3(p[0], p[1], p[2])));
   const centre = box.getCenter(new THREE.Vector3());
   const size   = box.getSize(new THREE.Vector3());
   const maxDim = Math.max(size.x, size.y, size.z);
-  // FOV-aware: distance needed so maxDim fits in the vertical FOV with 30% margin
   const dist   = (maxDim / 2) / Math.tan(camera.fov * Math.PI / 360) * 1.3;
   controls.target.copy(centre);
   camera.position.copy(centre).addScaledVector(
-    new THREE.Vector3(0.25, 0.25, 1).normalize(), dist
+    new THREE.Vector3(0.3, 0.3, 1).normalize(), dist
   );
   controls.update();
 }
 
-// ── playback ─────────────────────────────────────────────────────────────────
+// ── playback ──────────────────────────────────────────────────────────────────
 let currentFrame = 0;
 let isPlaying    = false;
-let lastFrameTs  = 0;
+let lastTs       = 0;
 
-function getTargetFps() { return parseInt(document.getElementById('speed-select').value); }
+function fps() { return parseInt(document.getElementById('speed-sel').value); }
 
 function setFrame(idx) {
-  currentFrame = Math.max(0, Math.min(idx, currentTransition.frames.length - 1));
+  currentFrame = Math.max(0, Math.min(idx, currentT.frames.length - 1));
   displayFrame(currentFrame);
-  const slider = document.getElementById('frame-slider');
-  slider.value = currentFrame;
-  document.getElementById('frame-display').textContent =
-    `${currentFrame} / ${currentTransition.frames.length - 1}`;
+  document.getElementById('slider').value = currentFrame;
+  document.getElementById('frame-num').textContent =
+    `${currentFrame} / ${currentT.frames.length - 1}`;
 }
 
 // ── render loop ───────────────────────────────────────────────────────────────
 function animate(ts) {
   requestAnimationFrame(animate);
-
-  if (isPlaying && currentTransition) {
-    const interval = 1000 / getTargetFps();
-    if (ts - lastFrameTs >= interval) {
-      setFrame((currentFrame + 1) % currentTransition.frames.length);
-      lastFrameTs = ts;
+  if (isPlaying && currentT) {
+    if (ts - lastTs >= 1000 / fps()) {
+      setFrame((currentFrame + 1) % currentT.frames.length);
+      lastTs = ts;
     }
   }
-
   controls.update();
   renderer.render(scene, camera);
 }
 
-// ── UI wiring ─────────────────────────────────────────────────────────────────
-const _transCache = {};
+// ── data loading ──────────────────────────────────────────────────────────────
+const _cache = {};
 
 async function loadTransition(meta) {
-  const tid = meta.id;
-
-  let t = _transCache[tid];
+  let t = _cache[meta.id];
   if (!t) {
     document.getElementById('info').innerHTML =
-      `<span style="color:#4466cc">Loading ${tid}…</span>`;
-    const resp = await fetch(`transitions/${tid}.json`);
-    if (!resp.ok) throw new Error(`HTTP ${resp.status} fetching ${tid}.json`);
-    t = await resp.json();
-    _transCache[tid] = t;
+      `<span class="hi">Loading ${meta.id}…</span>`;
+    const r = await fetch(`transitions/${meta.id}.json`);
+    if (!r.ok) throw new Error(`HTTP ${r.status}`);
+    t = await r.json();
+    _cache[meta.id] = t;
   }
-
-  buildSceneForTransition(t);
+  buildScene(t);
   setFrame(0);
-  fitCameraToFrame(t.frames[0]);
-
-  document.getElementById('frame-slider').max =
-    t.frames.length - 1;
-  document.getElementById('frame-display').textContent =
-    `0 / ${t.frames.length - 1}`;
-
+  fitCamera(t.frames[0]);
+  document.getElementById('slider').max = t.frames.length - 1;
   document.getElementById('info').innerHTML =
-    `<span class="hi">From C${t.from_cluster}:</span>  ${t.from_members.join(', ')}<br>` +
-    `<span class="hi">To   C${t.to_cluster}:</span>  ${t.to_members.join(', ')}<br>` +
-    `<span style="color:#334466">Cα residues: ${t.n_residues}` +
-    `  ·  res ${t.res_seq[0]}–${t.res_seq.at(-1)}</span>`;
+    `<span class="hi">C${t.from_cluster} → C${t.to_cluster}</span><br>` +
+    `From: ${t.from_members.join(', ')}<br>` +
+    `To:   ${t.to_members.join(', ')}<br>` +
+    `${t.n_residues} Cα &nbsp;·&nbsp; res ${t.res_seq[0]}–${t.res_seq.at(-1)}`;
 }
 
-document.getElementById('frame-slider').addEventListener('input', e => {
-  if (isPlaying) {
-    isPlaying = false;
-    document.getElementById('play-btn').textContent = '▶ Play';
-  }
+// ── UI wiring ─────────────────────────────────────────────────────────────────
+document.getElementById('slider').addEventListener('input', e => {
+  if (isPlaying) { isPlaying = false; document.getElementById('btn-play').textContent = '▶ Play'; }
   setFrame(parseInt(e.target.value));
 });
 
-document.getElementById('play-btn').addEventListener('click', () => {
+document.getElementById('btn-play').addEventListener('click', () => {
   isPlaying = !isPlaying;
-  document.getElementById('play-btn').textContent = isPlaying ? '⏸ Pause' : '▶ Play';
-  lastFrameTs = 0;
+  document.getElementById('btn-play').textContent = isPlaying ? '⏸ Pause' : '▶ Play';
+  lastTs = 0;
 });
 
-document.getElementById('reset-btn').addEventListener('click', () => {
+document.getElementById('btn-reset').addEventListener('click', () => {
   isPlaying = false;
-  document.getElementById('play-btn').textContent = '▶ Play';
+  document.getElementById('btn-play').textContent = '▶ Play';
   setFrame(0);
 });
 
@@ -544,32 +290,20 @@ window.addEventListener('resize', () => {
   camera.aspect = innerWidth / innerHeight;
   camera.updateProjectionMatrix();
   renderer.setSize(innerWidth, innerHeight);
-  backboneLines.forEach(l => l.material.resolution.set(innerWidth, innerHeight));
 });
 
-// ── load index ────────────────────────────────────────────────────────────────
+// ── bootstrap ─────────────────────────────────────────────────────────────────
 (async () => {
   try {
-    const resp = await fetch('transitions/index.json');
-    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-    const index = await resp.json();
+    const r = await fetch('transitions/index.json');
+    if (!r.ok) throw new Error(`HTTP ${r.status}`);
+    const index = await r.json();
 
-    // compute global residue range for consistent colouring
-    index.transitions.forEach(t =>
-      t.res_seq.forEach(r => {
-        if (r < gMinRes || gMinRes === 0) gMinRes = r;
-        if (r > gMaxRes) gMaxRes = r;
-      })
-    );
-
-    // populate dropdown
-    const sel = document.getElementById('transition-select');
+    const sel = document.getElementById('sel-transition');
     index.transitions.forEach((t, i) => {
-      const from = t.from_members.join('+');
-      const to   = t.to_members.join('+');
       const opt  = document.createElement('option');
       opt.value  = i;
-      opt.text   = `C${t.from_cluster}→C${t.to_cluster}  [${from}] → [${to}]  (${t.n_residues} Cα)`;
+      opt.text   = `C${t.from_cluster}→C${t.to_cluster}  [${t.from_members.join('+')}]→[${t.to_members.join('+')}]  (${t.n_residues} Cα)`;
       sel.appendChild(opt);
     });
 
@@ -579,15 +313,13 @@ window.addEventListener('resize', () => {
 
     document.getElementById('loader').style.display = 'none';
     document.getElementById('panel').style.display  = 'block';
-
     requestAnimationFrame(animate);
     loadTransition(index.transitions[0]);
 
   } catch (err) {
     const el = document.getElementById('loader');
     el.innerHTML =
-      `<span style="color:#884444">Failed to load transitions/index.json</span>` +
-      `<span class="sub">${err.message}</span>` +
+      `<span style="color:#662222">Failed: ${err.message}</span>` +
       `<span class="sub">Run:  python3 -m http.server  then open  http://localhost:8000</span>`;
   }
 })();
