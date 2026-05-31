@@ -443,10 +443,14 @@ if (isIOS) {
     btn.textContent = 'Preparing…';
     btn.disabled = true;
     try {
+      console.log('[USDZ] proteinGroup.children count:', proteinGroup.children.length);
+      console.log('[USDZ] child types:', proteinGroup.children.map(c => c.type));
+      console.log('[USDZ] any InstancedMesh:', proteinGroup.children.some(c => c.isInstancedMesh));
       proteinGroup.scale.setScalar(AR_SCALE);
       proteinGroup.updateMatrixWorld(true);
       const usdzData = await new USDZExporter().parseAsync(proteinGroup);
       proteinGroup.scale.setScalar(1);
+      console.log('[USDZ] arraybuffer byteLength:', usdzData.byteLength);
 
       const url    = URL.createObjectURL(new Blob([usdzData], { type: 'model/vnd.usdz+zip' }));
       const anchor = document.createElement('a');
