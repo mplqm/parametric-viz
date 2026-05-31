@@ -135,7 +135,7 @@ import { mergeGeometries }     from 'three/addons/utils/BufferGeometryUtils.js';
 
 // ── constants ─────────────────────────────────────────────────────────────────
 // Adenylate kinase CA trace spans ~80 Å.  Scale so it appears 10 cm in AR.
-const AR_SCALE     = 0.00003;       // ~3 cm diameter at 1 m placement (Three.js units = Å, XR units = m)
+const AR_SCALE     = 0.001;         // ~7 cm diameter at 1 m placement (Three.js units = Å, XR units = m)
 const AR_MAX_ATOMS = 214;           // performance cap for 60 fps on mobile
 const DIST2_BREAK  = 4.5 * 4.5;    // Å² — max Cα–Cα distance before chain break
 
