@@ -487,8 +487,12 @@ if (isIOS) {
       merged.computeBoundingBox();
       const bbSize   = merged.boundingBox.getSize(new THREE.Vector3());
       const bbCentre = merged.boundingBox.getCenter(new THREE.Vector3());
+      merged.translate(-bbCentre.x, -bbCentre.y, -bbCentre.z);
+      merged.computeBoundingBox();
+      const bbCentreAfter = merged.boundingBox.getCenter(new THREE.Vector3());
       const bbMsg    = `bbox size: ${bbSize.x.toFixed(2)}, ${bbSize.y.toFixed(2)}, ${bbSize.z.toFixed(2)} Å<br>` +
-                       `bbox centre: ${bbCentre.x.toFixed(2)}, ${bbCentre.y.toFixed(2)}, ${bbCentre.z.toFixed(2)}<br>` +
+                       `bbox centre before: ${bbCentre.x.toFixed(2)}, ${bbCentre.y.toFixed(2)}, ${bbCentre.z.toFixed(2)}<br>` +
+                       `bbox centre after: ${bbCentreAfter.x.toFixed(2)}, ${bbCentreAfter.y.toFixed(2)}, ${bbCentreAfter.z.toFixed(2)}<br>` +
                        `AR_SCALE: ${AR_SCALE}`;
       console.log('[USDZ geo]', bbMsg.replace(/<br>/g, ' | '));
       document.getElementById('usdz-debug').innerHTML += '<br>' + bbMsg;
