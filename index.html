@@ -135,7 +135,7 @@ import { mergeGeometries }     from 'three/addons/utils/BufferGeometryUtils.js';
 
 // ── constants ─────────────────────────────────────────────────────────────────
 // Adenylate kinase CA trace spans ~80 Å.  Scale so it appears 10 cm in AR.
-const AR_SCALE     = 0.1 / 80;     // ~0.00125  (Three.js units = Å, XR units = m)
+const AR_SCALE     = 0.0001;        // ~8 cm diameter at 1 m placement (Three.js units = Å, XR units = m)
 const AR_MAX_ATOMS = 214;           // performance cap for 60 fps on mobile
 const DIST2_BREAK  = 4.5 * 4.5;    // Å² — max Cα–Cα distance before chain break
 
@@ -495,10 +495,14 @@ if (isIOS) {
       dbg.innerHTML = dbg.innerHTML.replace('byteLength: …', `byteLength: ${usdzData.byteLength} — Mesh (merged)`);
 
       const url    = URL.createObjectURL(new Blob([usdzData], { type: 'model/vnd.usdz+zip' }));
+      // 1×1 transparent PNG — required as sole child of <a rel="ar"> for Quick Look
+      const imgSrc = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==';
+      const img    = document.createElement('img');
+      img.src      = imgSrc;
       const anchor = document.createElement('a');
       anchor.setAttribute('rel', 'ar');
-      anchor.href = url;
-      anchor.appendChild(document.createElement('img'));
+      anchor.href  = url;
+      anchor.appendChild(img);
       document.body.appendChild(anchor);
       anchor.click();
       setTimeout(() => { URL.revokeObjectURL(url); anchor.remove(); }, 5000);
