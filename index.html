@@ -483,6 +483,16 @@ if (isIOS) {
       }
       const merged  = mergeGeometries(geos, false);
       geos.forEach(g => g.dispose());
+
+      merged.computeBoundingBox();
+      const bbSize   = merged.boundingBox.getSize(new THREE.Vector3());
+      const bbCentre = merged.boundingBox.getCenter(new THREE.Vector3());
+      const bbMsg    = `bbox size: ${bbSize.x.toFixed(2)}, ${bbSize.y.toFixed(2)}, ${bbSize.z.toFixed(2)} Å<br>` +
+                       `bbox centre: ${bbCentre.x.toFixed(2)}, ${bbCentre.y.toFixed(2)}, ${bbCentre.z.toFixed(2)}<br>` +
+                       `AR_SCALE: ${AR_SCALE}`;
+      console.log('[USDZ geo]', bbMsg.replace(/<br>/g, ' | '));
+      document.getElementById('usdz-debug').innerHTML += '<br>' + bbMsg;
+
       const mat     = new THREE.MeshStandardMaterial({ vertexColors: true });
       const mesh    = new THREE.Mesh(merged, mat);
       mesh.scale.setScalar(AR_SCALE);
