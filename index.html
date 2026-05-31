@@ -275,11 +275,10 @@ function displayFrame(idx) {
 function fitCamera(frame) {
   const box = new THREE.Box3();
   frame.forEach(p => box.expandByPoint(new THREE.Vector3(p[0], p[1], p[2])));
-  const centre = box.getCenter(new THREE.Vector3());
-  const size   = box.getSize(new THREE.Vector3());
-  const dist   = (Math.max(size.x, size.y, size.z) / 2) / Math.tan(camera.fov * Math.PI / 360) * 1.3;
-  controls.target.copy(centre);
-  camera.position.copy(centre).addScaledVector(new THREE.Vector3(0.3, 0.3, 1).normalize(), dist);
+  const size = box.getSize(new THREE.Vector3());
+  const dist = (Math.max(size.x, size.y, size.z) / 2) / Math.tan(camera.fov * Math.PI / 360) * 1.3;
+  controls.target.set(0, 0, 0);
+  camera.position.set(0, 0, 0).addScaledVector(new THREE.Vector3(0.3, 0.3, 1).normalize(), dist);
   controls.update();
 }
 
