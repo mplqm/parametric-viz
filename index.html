@@ -130,7 +130,8 @@ import * as THREE           from 'three';
 import { OrbitControls }    from 'three/addons/controls/OrbitControls.js';
 import { ARButton }         from 'three/addons/webxr/ARButton.js';
 import { XREstimatedLight } from 'three/addons/webxr/XREstimatedLight.js';
-import { USDZExporter }    from 'three/addons/exporters/USDZExporter.js';
+import { USDZExporter }        from 'three/addons/exporters/USDZExporter.js';
+import { mergeGeometries }     from 'three/addons/utils/BufferGeometryUtils.js';
 
 // ── constants ─────────────────────────────────────────────────────────────────
 // Adenylate kinase CA trace spans ~80 Å.  Scale so it appears 10 cm in AR.
@@ -463,11 +464,35 @@ if (isIOS) {
         `InstancedMesh: ${proteinGroup.children.some(c => c.isInstancedMesh)}<br>` +
         `byteLength: …`;
       setTimeout(() => { dbg.style.display = 'none'; }, 10000);
-      proteinGroup.scale.setScalar(AR_SCALE);
-      proteinGroup.updateMatrixWorld(true);
-      const usdzData = await new USDZExporter().parseAsync(proteinGroup);
-      proteinGroup.scale.setScalar(1);
-      dbg.innerHTML = dbg.innerHTML.replace('byteLength: …', `byteLength: ${usdzData.byteLength}`);
+      // Build merged geometry from InstancedMesh — one cloned+transformed geo per instance
+      const instMesh = proteinGroup.children.find(c => c.isInstancedMesh);
+      const geos = [];
+      const col   = new THREE.Color();
+      const mat4  = new THREE.Matrix4();
+      for (let i = 0; i < instMesh.count; i++) {
+        instMesh.getMatrixAt(i, mat4);
+        instMesh.getColorAt(i, col);
+        const g = instMesh.geometry.clone();
+        g.applyMatrix4(mat4);
+        // Write per-vertex colour
+        const vCount = g.attributes.position.count;
+        const cArr   = new Float32Array(vCount * 3);
+        for (let v = 0; v < vCount; v++) { cArr[v*3] = col.r; cArr[v*3+1] = col.g; cArr[v*3+2] = col.b; }
+        g.setAttribute('color', new THREE.BufferAttribute(cArr, 3));
+        geos.push(g);
+      }
+      const merged  = mergeGeometries(geos, false);
+      geos.forEach(g => g.dispose());
+      const mat     = new THREE.MeshStandardMaterial({ vertexColors: true });
+      const mesh    = new THREE.Mesh(merged, mat);
+      mesh.scale.setScalar(AR_SCALE);
+      const exportGrp = new THREE.Group();
+      exportGrp.add(mesh);
+
+      const usdzData = await new USDZExporter().parseAsync(exportGrp);
+
+      merged.dispose(); mat.dispose(); exportGrp.remove(mesh);
+      dbg.innerHTML = dbg.innerHTML.replace('byteLength: …', `byteLength: ${usdzData.byteLength} — Mesh (merged)`);
 
       const url    = URL.createObjectURL(new Blob([usdzData], { type: 'model/vnd.usdz+zip' }));
       const anchor = document.createElement('a');
@@ -479,7 +504,7 @@ if (isIOS) {
       setTimeout(() => { URL.revokeObjectURL(url); anchor.remove(); }, 5000);
     } catch (e) {
       console.error('USDZ export failed:', e);
-      proteinGroup.scale.setScalar(1);
+      document.getElementById('usdz-debug').innerHTML += `<br>ERROR: ${e.message}`;
     } finally {
       btn.textContent = '▷ View in AR (Quick Look)';
       btn.disabled = false;
