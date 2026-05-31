@@ -4,7 +4,7 @@ Use this skill at the end of any task to produce a consistent
 condensed summary log.
 
 ## When to use
-Append "Follow SKILL.md logging format. Save as [task_name].log" 
+Append "Follow SKILL.md logging format." 
 to any prompt to activate this skill.
 
 ## Log format
@@ -30,5 +30,5 @@ Hash and full commit message. If no commit was made, say so.
 ## Rules
 - Maximum 20 lines total
 - No markdown formatting inside the log file — plain text only
-- Save in project root as [task_name].log
+- Save in project root as session.log — always this name, overwritten each session
 - Never summarise what you plan to do — only what was done
