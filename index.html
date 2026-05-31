@@ -62,9 +62,19 @@
 
   /* ── iOS AR Quick Look button ─────────────────────────────────────────────── */
   #ios-ar-row { display: none; margin-top: 10px; }
+
+  /* ── USDZ debug overlay ───────────────────────────────────────────────────── */
+  #usdz-debug {
+    display: none; position: fixed; top: 12px; left: 12px; z-index: 999;
+    background: rgba(0,0,0,.85); color: #fff; font-family: monospace;
+    font-size: 12px; line-height: 1.8; padding: 10px 14px; border-radius: 5px;
+    border: 1px solid #444; pointer-events: none;
+  }
 </style>
 </head>
 <body>
+
+<div id="usdz-debug"></div>
 
 <div id="loader">
   <span>LOADING</span>
@@ -443,14 +453,19 @@ if (isIOS) {
     btn.textContent = 'Preparing…';
     btn.disabled = true;
     try {
-      console.log('[USDZ] proteinGroup.children count:', proteinGroup.children.length);
-      console.log('[USDZ] child types:', proteinGroup.children.map(c => c.type));
-      console.log('[USDZ] any InstancedMesh:', proteinGroup.children.some(c => c.isInstancedMesh));
+      const dbg = document.getElementById('usdz-debug');
+      dbg.style.display = 'block';
+      dbg.innerHTML =
+        `children: ${proteinGroup.children.length}<br>` +
+        `types: ${proteinGroup.children.map(c => c.type).join(', ')}<br>` +
+        `InstancedMesh: ${proteinGroup.children.some(c => c.isInstancedMesh)}<br>` +
+        `byteLength: …`;
+      setTimeout(() => { dbg.style.display = 'none'; }, 10000);
       proteinGroup.scale.setScalar(AR_SCALE);
       proteinGroup.updateMatrixWorld(true);
       const usdzData = await new USDZExporter().parseAsync(proteinGroup);
       proteinGroup.scale.setScalar(1);
-      console.log('[USDZ] arraybuffer byteLength:', usdzData.byteLength);
+      dbg.innerHTML = dbg.innerHTML.replace('byteLength: …', `byteLength: ${usdzData.byteLength}`);
 
       const url    = URL.createObjectURL(new Blob([usdzData], { type: 'model/vnd.usdz+zip' }));
       const anchor = document.createElement('a');
