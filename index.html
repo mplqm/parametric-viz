@@ -59,6 +59,9 @@
     bottom: 20px !important; left: 50% !important;
     transform: translateX(-50%) !important;
   }
+
+  /* ── iOS AR Quick Look button ─────────────────────────────────────────────── */
+  #ios-ar-row { display: none; margin-top: 10px; }
 </style>
 </head>
 <body>
@@ -88,6 +91,10 @@
     </select>
   </div>
 
+  <div id="ios-ar-row">
+    <button id="ios-ar-btn" style="width:100%">&#9657; View in AR (Quick Look)</button>
+  </div>
+
   <div id="ar-hint">&#9679; Point camera at a flat surface</div>
   <div id="info"></div>
 
@@ -111,6 +118,7 @@ import * as THREE           from 'three';
 import { OrbitControls }    from 'three/addons/controls/OrbitControls.js';
 import { ARButton }         from 'three/addons/webxr/ARButton.js';
 import { XREstimatedLight } from 'three/addons/webxr/XREstimatedLight.js';
+import { USDZExporter }    from 'three/addons/exporters/USDZExporter.js';
 
 // ── constants ─────────────────────────────────────────────────────────────────
 // Adenylate kinase CA trace spans ~80 Å.  Scale so it appears 10 cm in AR.
@@ -421,6 +429,41 @@ if ('xr' in navigator) {
     btn.id = 'ARButton';
     document.body.appendChild(btn);
   }).catch(() => {});
+}
+
+// ── iOS AR Quick Look ─────────────────────────────────────────────────────────
+const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+              (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+
+if (isIOS) {
+  document.getElementById('ios-ar-row').style.display = 'block';
+
+  document.getElementById('ios-ar-btn').addEventListener('click', async () => {
+    const btn = document.getElementById('ios-ar-btn');
+    btn.textContent = 'Preparing…';
+    btn.disabled = true;
+    try {
+      proteinGroup.scale.setScalar(AR_SCALE);
+      proteinGroup.updateMatrixWorld(true);
+      const usdzData = await new USDZExporter().parseAsync(proteinGroup);
+      proteinGroup.scale.setScalar(1);
+
+      const url    = URL.createObjectURL(new Blob([usdzData], { type: 'model/vnd.usdz+zip' }));
+      const anchor = document.createElement('a');
+      anchor.setAttribute('rel', 'ar');
+      anchor.href = url;
+      anchor.appendChild(document.createElement('img'));
+      document.body.appendChild(anchor);
+      anchor.click();
+      setTimeout(() => { URL.revokeObjectURL(url); anchor.remove(); }, 5000);
+    } catch (e) {
+      console.error('USDZ export failed:', e);
+      proteinGroup.scale.setScalar(1);
+    } finally {
+      btn.textContent = '▷ View in AR (Quick Look)';
+      btn.disabled = false;
+    }
+  });
 }
 
 // ── playback ──────────────────────────────────────────────────────────────────
