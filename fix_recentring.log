@@ -1,0 +1,23 @@
+TASK
+Remove viewer recentring so the camera trusts the geometry is already centred at [0,0,0].
+
+FOUND
+index.html, function fitCamera (line 275). It computed a bounding-box centroid from
+frame 0 geometry and applied it to controls.target and camera.position, offsetting
+the orbit pivot away from the origin on every transition load.
+
+CHANGED
+index.html, fitCamera (lines 275-284):
+- Removed: const centre = box.getCenter(new THREE.Vector3())
+- Removed: controls.target.copy(centre)
+- Removed: camera.position.copy(centre).addScaledVector(...)
+- Added:   controls.target.set(0, 0, 0)
+- Added:   camera.position.set(0, 0, 0).addScaledVector(new THREE.Vector3(0.3, 0.3, 1).normalize(), dist)
+Bounding-box size and dist calculation kept unchanged.
+
+RESULT
+OrbitControls target and camera origin are fixed at (0,0,0). Geometry centroid
+no longer applied as a positional offset on load.
+
+COMMIT
+d0e049c Fix: remove viewer recentring — trust geometry [0,0,0]
