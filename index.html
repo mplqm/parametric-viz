@@ -486,7 +486,7 @@ if (isIOS) {
       geos.forEach(g => g.dispose());
 
       // Scale geometry positions directly — mesh.scale is not baked into USDZ xformOp
-      const scale = 0.001;
+      const scale = 0.0015;
       const positions = merged.attributes.position;
       for (let i = 0; i < positions.count; i++) {
         positions.setX(i, positions.getX(i) * scale);
