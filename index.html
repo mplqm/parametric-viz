@@ -482,8 +482,36 @@ if (isIOS) {
         g.setAttribute('uv', new THREE.BufferAttribute(uvArr, 2));
         geos.push(g);
       }
-      const merged = mergeGeometries(geos, false);
+      // Build backbone cylinders between consecutive CA pairs (reuse segA/segB from main viewer)
+      const cylGeos = [];
+      const posA = new THREE.Vector3(), posB = new THREE.Vector3();
+      const up   = new THREE.Vector3(0, 1, 0);
+      const matA = new THREE.Matrix4(), matB = new THREE.Matrix4();
+      for (let s = 0; s < segA.length; s++) {
+        instMesh.getMatrixAt(segA[s], matA);
+        instMesh.getMatrixAt(segB[s], matB);
+        posA.setFromMatrixPosition(matA);
+        posB.setFromMatrixPosition(matB);
+        const dir = posB.clone().sub(posA);
+        const len = dir.length();
+        if (len < 0.001) continue;
+        dir.divideScalar(len);
+        const cyl  = new THREE.CylinderGeometry(0.0015, 0.0015, len, 6, 1);
+        const quat = new THREE.Quaternion().setFromUnitVectors(up, dir);
+        cyl.applyMatrix4(new THREE.Matrix4().makeRotationFromQuaternion(quat));
+        const mid = posA.clone().add(posB).multiplyScalar(0.5);
+        cyl.applyMatrix4(new THREE.Matrix4().makeTranslation(mid.x, mid.y, mid.z));
+        const cu     = (segA[s] + segB[s]) * 0.5 / Math.max(total - 1, 1);
+        const cvCount = cyl.attributes.position.count;
+        const cuvArr  = new Float32Array(cvCount * 2);
+        for (let v = 0; v < cvCount; v++) { cuvArr[v*2] = cu; cuvArr[v*2+1] = 0.5; }
+        cyl.setAttribute('uv', new THREE.BufferAttribute(cuvArr, 2));
+        cylGeos.push(cyl);
+      }
+
+      const merged = mergeGeometries([...geos, ...cylGeos], false);
       geos.forEach(g => g.dispose());
+      cylGeos.forEach(g => g.dispose());
 
       // 256×1 rainbow canvas: red (N-term) → violet (C-term), matching main viewer
       const rainbowCanvas  = document.createElement('canvas');
@@ -513,7 +541,7 @@ if (isIOS) {
 
       merged.computeBoundingBox();
       const bbSize = merged.boundingBox.getSize(new THREE.Vector3());
-      const bbMsg  = `scaled bbox: ${bbSize.x.toFixed(4)}, ${bbSize.y.toFixed(4)}, ${bbSize.z.toFixed(4)} m`;
+      const bbMsg  = `scaled bbox: ${bbSize.x.toFixed(4)}, ${bbSize.y.toFixed(4)}, ${bbSize.z.toFixed(4)} m — spheres:${total} cyls:${cylGeos.length}`;
       console.log('[USDZ geo]', bbMsg);
       document.getElementById('usdz-debug').innerHTML += '<br>' + bbMsg;
 
