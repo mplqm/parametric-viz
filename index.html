@@ -465,25 +465,35 @@ if (isIOS) {
         `InstancedMesh: ${proteinGroup.children.some(c => c.isInstancedMesh)}<br>` +
         `byteLength: …`;
       setTimeout(() => { dbg.style.display = 'none'; }, 10000);
-      // Build merged geometry from InstancedMesh — one cloned+transformed geo per instance
+      // Build merged geometry from InstancedMesh with UV-based rainbow gradient
       const instMesh = proteinGroup.children.find(c => c.isInstancedMesh);
-      const geos = [];
-      const col   = new THREE.Color();
+      const total = instMesh.count;
+      const geos  = [];
       const mat4  = new THREE.Matrix4();
-      for (let i = 0; i < instMesh.count; i++) {
+      for (let i = 0; i < total; i++) {
         instMesh.getMatrixAt(i, mat4);
-        instMesh.getColorAt(i, col);
         const g = instMesh.geometry.clone();
         g.applyMatrix4(mat4);
-        // Write per-vertex colour
+        // Assign flat UV: u = position in chain, v = 0.5
+        const u      = i / Math.max(total - 1, 1);
         const vCount = g.attributes.position.count;
-        const cArr   = new Float32Array(vCount * 3);
-        for (let v = 0; v < vCount; v++) { cArr[v*3] = col.r; cArr[v*3+1] = col.g; cArr[v*3+2] = col.b; }
-        g.setAttribute('color', new THREE.BufferAttribute(cArr, 3));
+        const uvArr  = new Float32Array(vCount * 2);
+        for (let v = 0; v < vCount; v++) { uvArr[v*2] = u; uvArr[v*2+1] = 0.5; }
+        g.setAttribute('uv', new THREE.BufferAttribute(uvArr, 2));
         geos.push(g);
       }
-      const merged  = mergeGeometries(geos, false);
+      const merged = mergeGeometries(geos, false);
       geos.forEach(g => g.dispose());
+
+      // 256×1 rainbow canvas: red (N-term) → violet (C-term), matching main viewer
+      const rainbowCanvas  = document.createElement('canvas');
+      rainbowCanvas.width  = 256;
+      rainbowCanvas.height = 1;
+      const rctx = rainbowCanvas.getContext('2d');
+      for (let x = 0; x < 256; x++) {
+        rctx.fillStyle = `hsl(${(x / 255) * 270}, 100%, 55%)`;
+        rctx.fillRect(x, 0, 1, 1);
+      }
 
       // Scale geometry positions directly — mesh.scale is not baked into USDZ xformOp
       const scale = 0.0015;
@@ -507,14 +517,15 @@ if (isIOS) {
       console.log('[USDZ geo]', bbMsg);
       document.getElementById('usdz-debug').innerHTML += '<br>' + bbMsg;
 
-      const mat     = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.5, metalness: 0.1 });
+      const texture = new THREE.CanvasTexture(rainbowCanvas);
+      const mat     = new THREE.MeshStandardMaterial({ map: texture, roughness: 0.5, metalness: 0.1 });
       const mesh    = new THREE.Mesh(merged, mat);
       const exportGrp = new THREE.Group();
       exportGrp.add(mesh);
 
       const usdzData = await new USDZExporter().parseAsync(exportGrp);
 
-      merged.dispose(); mat.dispose(); exportGrp.remove(mesh);
+      merged.dispose(); mat.dispose(); texture.dispose(); exportGrp.remove(mesh);
 
       const bytes  = new Uint8Array(usdzData.slice(0, 16));
       const hex    = Array.from(bytes).map(b => b.toString(16).padStart(2, '0')).join(' ');
