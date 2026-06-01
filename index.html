@@ -498,7 +498,7 @@ if (isIOS) {
       console.log('[USDZ geo]', bbMsg.replace(/<br>/g, ' | '));
       document.getElementById('usdz-debug').innerHTML += '<br>' + bbMsg;
 
-      const mat     = new THREE.MeshStandardMaterial({ vertexColors: true });
+      const mat     = new THREE.MeshStandardMaterial({ color: 0x88aaff, roughness: 0.5, metalness: 0.1 });
       const mesh    = new THREE.Mesh(merged, mat);
       mesh.scale.setScalar(AR_SCALE);
       const exportGrp = new THREE.Group();
