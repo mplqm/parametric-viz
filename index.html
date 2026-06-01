@@ -105,6 +105,7 @@
 
   <div id="ios-ar-row">
     <button id="ios-ar-btn" style="width:100%">&#9657; View in AR (Quick Look)</button>
+    <button id="ios-ar-test" style="width:100%;margin-top:6px">AR Test</button>
   </div>
 
   <div id="ar-hint">&#9679; Point camera at a flat surface</div>
@@ -523,6 +524,16 @@ if (isIOS) {
       btn.textContent = '▷ View in AR (Quick Look)';
       btn.disabled = false;
     }
+  });
+
+  document.getElementById('ios-ar-test').addEventListener('click', () => {
+    const a = document.createElement('a');
+    a.setAttribute('rel', 'ar');
+    a.appendChild(document.createElement('img'));
+    a.href = 'https://developer.apple.com/augmented-reality/quick-look/models/drummertoy/toy_drummer.usdz';
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(() => a.remove(), 30000);
   });
 }
 
