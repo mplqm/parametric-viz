@@ -496,7 +496,7 @@ if (isIOS) {
         const len = dir.length();
         if (len < 0.001) continue;
         dir.divideScalar(len);
-        const cyl  = new THREE.CylinderGeometry(0.0015, 0.0015, len, 6, 1);
+        const cyl  = new THREE.CylinderGeometry(0.075, 0.075, len, 6, 1);
         const quat = new THREE.Quaternion().setFromUnitVectors(up, dir);
         cyl.applyMatrix4(new THREE.Matrix4().makeRotationFromQuaternion(quat));
         const mid = posA.clone().add(posB).multiplyScalar(0.5);
