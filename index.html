@@ -507,12 +507,29 @@ if (isIOS) {
       const usdzData = await new USDZExporter().parseAsync(exportGrp);
 
       merged.dispose(); mat.dispose(); exportGrp.remove(mesh);
-      dbg.innerHTML = dbg.innerHTML.replace('byteLength: …', `byteLength: ${usdzData.byteLength} — Mesh (merged)`);
 
       const bytes  = new Uint8Array(usdzData.slice(0, 16));
-      const header = Array.from(bytes).map(b => String.fromCharCode(b)).join('');
       const hex    = Array.from(bytes).map(b => b.toString(16).padStart(2, '0')).join(' ');
-      dbg.innerHTML += `<br>byteLength: ${usdzData.byteLength}<br>header: ${header}<br>hex: ${hex}`;
+      dbg.innerHTML = dbg.innerHTML.replace('byteLength: …',
+        `byteLength: ${usdzData.byteLength}<br>hex: ${hex}`);
+
+      const serverBase = `https://${location.hostname}:8444`;
+      dbg.innerHTML += '<br>posting to server…';
+      const postResp = await fetch(`${serverBase}/save-usdz`, {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/octet-stream' },
+        body:    usdzData,
+      });
+      if (!postResp.ok) throw new Error(`POST /save-usdz → ${postResp.status}`);
+      dbg.innerHTML += ' OK';
+
+      const a = document.createElement('a');
+      a.setAttribute('rel', 'ar');
+      a.appendChild(document.createElement('img'));
+      a.href = `${serverBase}/protein.usdz`;
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(() => a.remove(), 30000);
     } catch (e) {
       console.error('USDZ export failed:', e);
       document.getElementById('usdz-debug').innerHTML += `<br>ERROR: ${e.message}`;
