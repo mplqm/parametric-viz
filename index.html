@@ -515,13 +515,19 @@ if (isIOS) {
 
       const serverBase = `https://${location.hostname}:8444`;
       dbg.innerHTML += '<br>posting to server…';
-      const postResp = await fetch(`${serverBase}/save-usdz`, {
-        method:  'POST',
-        headers: { 'Content-Type': 'application/octet-stream' },
-        body:    usdzData,
-      });
+      let postResp;
+      try {
+        postResp = await fetch(`${serverBase}/save-usdz`, {
+          method:  'POST',
+          headers: { 'Content-Type': 'application/octet-stream' },
+          body:    usdzData,
+        });
+        dbg.innerHTML += ' POST status: ' + postResp.status;
+      } catch (err) {
+        dbg.innerHTML += ' POST error: ' + err.message + ' | ' + err.name;
+        throw err;
+      }
       if (!postResp.ok) throw new Error(`POST /save-usdz → ${postResp.status}`);
-      dbg.innerHTML += ' OK';
 
       const a = document.createElement('a');
       a.setAttribute('rel', 'ar');
