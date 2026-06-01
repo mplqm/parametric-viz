@@ -509,8 +509,10 @@ if (isIOS) {
       merged.dispose(); mat.dispose(); exportGrp.remove(mesh);
       dbg.innerHTML = dbg.innerHTML.replace('byteLength: …', `byteLength: ${usdzData.byteLength} — Mesh (merged)`);
 
-      const b64 = btoa(String.fromCharCode(...new Uint8Array(usdzData)));
-      dbg.innerHTML += `<br>byteLength: ${usdzData.byteLength}<br>base64[0:200]:<br>${b64.slice(0, 200)}`;
+      const bytes  = new Uint8Array(usdzData.slice(0, 16));
+      const header = Array.from(bytes).map(b => String.fromCharCode(b)).join('');
+      const hex    = Array.from(bytes).map(b => b.toString(16).padStart(2, '0')).join(' ');
+      dbg.innerHTML += `<br>byteLength: ${usdzData.byteLength}<br>header: ${header}<br>hex: ${hex}`;
     } catch (e) {
       console.error('USDZ export failed:', e);
       document.getElementById('usdz-debug').innerHTML += `<br>ERROR: ${e.message}`;
