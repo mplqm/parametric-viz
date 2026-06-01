@@ -509,14 +509,8 @@ if (isIOS) {
       merged.dispose(); mat.dispose(); exportGrp.remove(mesh);
       dbg.innerHTML = dbg.innerHTML.replace('byteLength: …', `byteLength: ${usdzData.byteLength} — Mesh (merged)`);
 
-      const blobURL  = URL.createObjectURL(new Blob([usdzData], { type: 'model/vnd.usdz+zip' }));
-      const dlLink   = document.createElement('a');
-      dlLink.href    = blobURL;
-      dlLink.download = 'protein.usdz';
-      dlLink.textContent = 'Download USDZ for inspection';
-      dlLink.style.cssText = 'display:block;margin-top:8px;color:#88aaff;font-size:12px;';
-      dbg.appendChild(dlLink);
-      setTimeout(() => { URL.revokeObjectURL(blobURL); dlLink.remove(); }, 30000);
+      const b64 = btoa(String.fromCharCode(...new Uint8Array(usdzData)));
+      dbg.innerHTML += `<br>byteLength: ${usdzData.byteLength}<br>base64[0:200]:<br>${b64.slice(0, 200)}`;
     } catch (e) {
       console.error('USDZ export failed:', e);
       document.getElementById('usdz-debug').innerHTML += `<br>ERROR: ${e.message}`;
