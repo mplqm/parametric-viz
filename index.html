@@ -513,29 +513,21 @@ if (isIOS) {
       dbg.innerHTML = dbg.innerHTML.replace('byteLength: …',
         `byteLength: ${usdzData.byteLength}<br>hex: ${hex}`);
 
-      const serverBase = `https://${location.hostname}:8444`;
-      dbg.innerHTML += '<br>posting to server…';
-      let postResp;
-      try {
-        postResp = await fetch(`${serverBase}/save-usdz`, {
-          method:  'POST',
-          headers: { 'Content-Type': 'application/octet-stream' },
-          body:    usdzData,
-        });
-        dbg.innerHTML += ' POST status: ' + postResp.status;
-      } catch (err) {
-        dbg.innerHTML += ' POST error: ' + err.message + ' | ' + err.name;
-        throw err;
-      }
-      if (!postResp.ok) throw new Error(`POST /save-usdz → ${postResp.status}`);
+      const blobURL = URL.createObjectURL(new Blob([usdzData], { type: 'model/vnd.usdz+zip' }));
+      dbg.innerHTML += '<br>blob created, navigating…';
 
-      const a = document.createElement('a');
-      a.setAttribute('rel', 'ar');
-      a.appendChild(document.createElement('img'));
-      a.href = `${serverBase}/protein.usdz`;
-      document.body.appendChild(a);
-      a.click();
-      setTimeout(() => a.remove(), 30000);
+      // Alternative trigger: navigate directly to blob URL
+      window.location.href = blobURL;
+
+      // Fallback anchor pattern (not used):
+      // const a = document.createElement('a');
+      // a.setAttribute('rel', 'ar');
+      // a.appendChild(document.createElement('img'));
+      // a.href = blobURL;
+      // document.body.appendChild(a);
+      // a.click();
+
+      setTimeout(() => URL.revokeObjectURL(blobURL), 30000);
     } catch (e) {
       console.error('USDZ export failed:', e);
       document.getElementById('usdz-debug').innerHTML += `<br>ERROR: ${e.message}`;
