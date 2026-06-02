@@ -60,13 +60,7 @@ If you'd rather not touch the files directly:
 3. Paste your annotation as a code block
 4. Include which structure ID(s) you're annotating
 
-We'll incorporate it and credit you in the file.
-
-### Option 3 — Email
-
-If neither of the above works:
-
-Write your annotation in the format shown above and send it to the address in the repo profile. Same credit, same inclusion — just a slower process.
+A maintainer will validate the format and commit it to the right file. Your username and date will be recorded in the annotation. (Automated ingestion via GitHub Action is planned — contributions via issue are welcome now.)
 
 ---
 

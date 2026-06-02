@@ -1,6 +1,6 @@
 ---
 name: parametric-viz-pipeline
-description: Run the full parametric-viz pipeline for a new scientific domain — download, geometry extraction, RMSD matrix, clustering, transition generation, git commit. Use this skill whenever the user asks to run the pipeline, process a new domain, add structures, generate transitions, or anything related to the parametric-viz scientific visualization pipeline. Also use when the user mentions domain names from the roadmap (astronomy, crystals, neurons, archaeology, climate) in the context of processing or visualization.
+description: Run the full parametric-viz pipeline for a new scientific domain — download, geometry extraction, RMSD matrix, clustering, transition generation, git commit, and Zenodo publish. Use this skill whenever the user asks to run the pipeline, process a new domain, add structures, generate transitions, or anything related to the parametric-viz scientific visualization pipeline. Also use when the user mentions domain names from the roadmap (astronomy, crystals, neurons, archaeology, climate) in the context of processing or visualization.
 ---
 
 # Parametric Viz Pipeline
@@ -240,11 +240,19 @@ viz3d_pipeline/
   extract_geometry.py      — CA backbone extraction
   align_and_cluster.py     — RMSD matrix + clustering
   build_transitions.py     — interpolation + easing
+  publish.py               — Zenodo + GitHub publish automation
   index.html               — Three.js + WebXR + iOS USDZ viewer
+  domain_config/           — one JSON per domain, Zenodo metadata
+    proteins.json
   geometry/                — CA backbone JSONs ✅ GitHub
   clusters.json            — cluster assignments ✅ GitHub
   transitions/             — per-transition files ✅ Zenodo only
   .gitignore               — excludes pdb_files/ transitions/ __pycache__/
+  docs/
+    pipeline.md
+    schema.md
+    contributing.md
+    publish.md
 ```
 
 ---
@@ -269,6 +277,33 @@ viz3d_pipeline/
 - OS: AV Linux MX Edition (Debian-based)
 
 Scale `multiprocessing.Pool` to 8 workers on this machine.
+
+---
+
+## Step 10 — Publish (`publish.py`)
+
+Run after git commit. Always sandbox first.
+
+```bash
+python3 publish.py --domain [name] --sandbox   # dry run
+python3 publish.py --domain [name]             # production
+```
+
+Requires environment variables:
+```bash
+export ZENODO_TOKEN=your_zenodo_token
+export GITHUB_TOKEN=your_github_pat
+```
+
+Sequence (fully automated):
+1. Upload transitions/ and geometry/ to Zenodo
+2. Set metadata and publish — retrieve DOI
+3. Patch zenodo_doi into all model JSONs
+4. Commit DOI-updated JSONs and push
+5. Open GitHub issues for all flagged structures
+6. Make GitHub repo public
+
+See `docs/publish.md` for full usage.
 
 ---
 

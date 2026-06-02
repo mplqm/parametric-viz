@@ -48,7 +48,7 @@ Same pipeline. Same phone. One URL per domain.
 
 ## Want to go deeper?
 
-**You're a scientist or researcher** — the data is fully open. [Schema documentation →](docs/schema.md) | [Zenodo dataset →](#) | [Contribute annotations →](docs/contributing.md)
+**You're a scientist or researcher** — the data is fully open. [Schema documentation →](docs/schema.md) | [Zenodo dataset →](#) *(DOI assigned on publish)* | [Contribute annotations →](docs/contributing.md)
 
 **You're a developer** — the pipeline is open source and domain-agnostic. Point it at a new database and it generates visualizations automatically. [How the pipeline works →](docs/pipeline.md)
 

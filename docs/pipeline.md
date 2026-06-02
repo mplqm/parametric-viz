@@ -33,6 +33,8 @@ align_and_cluster.py      — pairwise RMSD → cluster → keyframe states
 build_transitions.py      — interpolate between states → transition JSONs
       ↓
 index.html                — load on demand → render in AR or desktop
+      ↓
+publish.py                — Zenodo upload → DOI → patch JSONs → GitHub issues → repo public
 ```
 
 Each stage is a standalone script. Run them in sequence. Outputs of each stage are inputs to the next. Nothing is stateful between runs — restart any stage without affecting others.
@@ -206,6 +208,7 @@ Single file. Three rendering tiers, one URL, auto-detected on load:
 - Reticle shown before placement, confirmed on tap
 - Pinch to scale, two-finger rotate
 - Floating UI panel in AR space
+- WebXR light estimation, fallback to ambient + directional
 - Subsampled to 214 CA atoms max for mobile 60fps
 
 **iOS Safari** → AR Quick Look via USDZExporter
@@ -265,6 +268,27 @@ Credentials stored via `git config credential.helper store`. Never embed PAT in 
 
 What goes to GitHub: pipeline scripts, geometry JSONs, clusters.json, README, SKILL.md, pipeline.md.
 
+**Repo structure** (key files):
+```
+viz3d_pipeline/
+  download_family.py
+  extract_geometry.py
+  align_and_cluster.py
+  build_transitions.py
+  publish.py                 — Zenodo + GitHub publish automation
+  index.html
+  domain_config/             — one JSON per domain, Zenodo metadata
+    proteins.json
+  geometry/
+  clusters.json
+  transitions/               — Zenodo only
+  docs/
+    pipeline.md
+    schema.md
+    contributing.md
+    publish.md
+```
+
 What goes to Zenodo only: transitions/ (too large for GitHub, needs DOI).
 
 What goes nowhere: pdb_files/ (always re-downloadable from source).
@@ -299,6 +323,54 @@ What goes nowhere: pdb_files/ (always re-downloadable from source).
 | iOS AR | Confirmed working May 2026 ✅ |
 
 Use these as a sanity check when running a new domain. If cluster counts or transition volumes are wildly different in proportion, investigate before proceeding.
+
+---
+
+## Stage 5 — Publish (`publish.py`)
+
+Automates the full Zenodo + GitHub publish sequence. Run after git commit. No manual steps required.
+
+```bash
+python3 publish.py --domain proteins --sandbox   # test run first
+python3 publish.py --domain proteins             # production
+```
+
+**What it does in sequence:**
+
+1. Uploads `transitions/` folder to Zenodo as a dataset release
+2. Uploads `geometry/` folder to the same deposit
+3. Sets metadata — domain, family, pipeline version, structure count
+4. Publishes the deposit and retrieves the DOI
+5. Patches `zenodo_doi` into all model JSONs
+6. Commits the DOI-updated JSONs to git and pushes
+7. Opens GitHub issues for all flagged structures (Stage 2 invitation)
+8. Makes the GitHub repo public via GitHub API
+
+**Requires two tokens** set as environment variables:
+
+```bash
+export ZENODO_TOKEN=your_zenodo_token
+export GITHUB_TOKEN=your_github_pat
+```
+
+**Always run sandbox first.** Zenodo sandbox is a full dry-run environment — identical behaviour, no public deposit. Confirm the DOI comes back and JSONs update correctly before running production.
+
+**Domain config** lives in `domain_config/<domain>.json` — title, description, keywords, creator metadata for the Zenodo record.
+
+See `docs/publish.md` for full usage, token setup, and domain config format.
+
+---
+
+## Animation Hold (Pending ⬜)
+
+Not yet implemented. Specified behaviour for desktop and WebXR AR viewers:
+
+- 2 second pause at each end state before the next transition plays
+- Gives the viewer time to read the structure before motion resumes
+- Applies to both desktop Three.js and WebXR AR
+- Does not apply to iOS AR Quick Look — ARKit shows static conformation only
+
+Implementation: track animation state in the viewer loop; when a transition completes, set a hold timer before queuing the next transition.
 
 ---
 
