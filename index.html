@@ -63,24 +63,12 @@
   /* ── iOS AR Quick Look button ─────────────────────────────────────────────── */
   #ios-ar-row { display: none; margin-top: 10px; }
 
-  /* ── USDZ debug overlay ───────────────────────────────────────────────────── */
-  #usdz-debug {
-    display: none; position: fixed; top: 12px; left: 12px; z-index: 999;
-    background: rgba(0,0,0,.85); color: #fff; font-family: monospace;
-    font-size: 12px; line-height: 1.8; padding: 10px 14px; border-radius: 5px;
-    border: 1px solid #444; pointer-events: none;
-  }
 </style>
 </head>
 <body>
 
-<div id="usdz-debug"></div>
-
-<div style="position:fixed;top:0;left:0;z-index:9999;background:#000;color:#fff;font-family:monospace;font-size:14px;padding:6px 10px;">page loaded</div>
-
 <div id="loader">
   <span>LOADING</span>
-  <span class="sub">python3 serve_https.py  ·  then open https://localhost:8443</span>
 </div>
 
 <div id="panel" style="display:none">
@@ -105,7 +93,6 @@
 
   <div id="ios-ar-row">
     <button id="ios-ar-btn" style="width:100%">&#9657; View in AR (Quick Look)</button>
-    <button id="ios-ar-test" style="width:100%;margin-top:6px">AR Test</button>
   </div>
 
   <div id="ar-hint">&#9679; Point camera at a flat surface</div>
@@ -457,14 +444,6 @@ if (isIOS) {
     btn.textContent = 'Preparing…';
     btn.disabled = true;
     try {
-      const dbg = document.getElementById('usdz-debug');
-      dbg.style.display = 'block';
-      dbg.innerHTML =
-        `children: ${proteinGroup.children.length}<br>` +
-        `types: ${proteinGroup.children.map(c => c.type).join(', ')}<br>` +
-        `InstancedMesh: ${proteinGroup.children.some(c => c.isInstancedMesh)}<br>` +
-        `byteLength: …`;
-      setTimeout(() => { dbg.style.display = 'none'; }, 10000);
       // Build merged geometry from InstancedMesh with UV-based rainbow gradient
       const instMesh = proteinGroup.children.find(c => c.isInstancedMesh);
       const total = instMesh.count;
@@ -539,12 +518,6 @@ if (isIOS) {
       merged.boundingBox.getCenter(exportCentre);
       merged.translate(-exportCentre.x, -exportCentre.y, -exportCentre.z);
 
-      merged.computeBoundingBox();
-      const bbSize = merged.boundingBox.getSize(new THREE.Vector3());
-      const bbMsg  = `scaled bbox: ${bbSize.x.toFixed(4)}, ${bbSize.y.toFixed(4)}, ${bbSize.z.toFixed(4)} m — spheres:${total} cyls:${cylGeos.length}`;
-      console.log('[USDZ geo]', bbMsg);
-      document.getElementById('usdz-debug').innerHTML += '<br>' + bbMsg;
-
       const texture = new THREE.CanvasTexture(rainbowCanvas);
       const mat     = new THREE.MeshStandardMaterial({ map: texture, roughness: 0.5, metalness: 0.1 });
       const mesh    = new THREE.Mesh(merged, mat);
@@ -555,44 +528,17 @@ if (isIOS) {
 
       merged.dispose(); mat.dispose(); texture.dispose(); exportGrp.remove(mesh);
 
-      const bytes  = new Uint8Array(usdzData.slice(0, 16));
-      const hex    = Array.from(bytes).map(b => b.toString(16).padStart(2, '0')).join(' ');
-      dbg.innerHTML = dbg.innerHTML.replace('byteLength: …',
-        `byteLength: ${usdzData.byteLength}<br>hex: ${hex}`);
-
       const blobURL = URL.createObjectURL(new Blob([usdzData], { type: 'model/vnd.usdz+zip' }));
-      dbg.innerHTML += '<br>blob created, navigating…';
-
-      // Alternative trigger: navigate directly to blob URL
       window.location.href = blobURL;
-
-      // Fallback anchor pattern (not used):
-      // const a = document.createElement('a');
-      // a.setAttribute('rel', 'ar');
-      // a.appendChild(document.createElement('img'));
-      // a.href = blobURL;
-      // document.body.appendChild(a);
-      // a.click();
-
       setTimeout(() => URL.revokeObjectURL(blobURL), 30000);
     } catch (e) {
       console.error('USDZ export failed:', e);
-      document.getElementById('usdz-debug').innerHTML += `<br>ERROR: ${e.message}`;
     } finally {
       btn.textContent = '▷ View in AR (Quick Look)';
       btn.disabled = false;
     }
   });
 
-  document.getElementById('ios-ar-test').addEventListener('click', () => {
-    const a = document.createElement('a');
-    a.setAttribute('rel', 'ar');
-    a.appendChild(document.createElement('img'));
-    a.href = 'https://developer.apple.com/augmented-reality/quick-look/models/drummertoy/toy_drummer.usdz';
-    document.body.appendChild(a);
-    a.click();
-    setTimeout(() => a.remove(), 30000);
-  });
 }
 
 // ── playback ──────────────────────────────────────────────────────────────────
